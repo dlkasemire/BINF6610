@@ -1,0 +1,16 @@
+# pipeline output — never commit
+results/
+out/
+
+# sequencing data and references; too big, and not mine to publish
+*.fastq.gz
+*.fq.gz
+*.bam
+*.bai
+*.fa
+*.fa.*
+
+# VCFs, except the smoke run's, which I must commit
+*.vcf.gz
+*.vcf.gz.tbi
+!smoke-run/cohort.filtered.vcf.gz
