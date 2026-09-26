@@ -179,13 +179,103 @@ stage_align() {
 }
 
 #=============================================================================
+# 4 · postprocess — mark duplicates, index, flagstat
+#=============================================================================
+stage_postprocess() {
+    local id cond rep lt r1 r2 bam dedup
+    while IFS=, read -r id cond rep lt r1 r2; do
+        bam="${ALN}/${id}.bam"
+        dedup="${ALN}/${id}.dedup.bam"
+
+        # GATK writes a lot to both channels, so all of it goes to the log.
+        # Because nothing reaches the screen, a failure needs its own message.
+        gatk MarkDuplicates -I "$bam" -O "$dedup" -M "${LOG}/${id}.markdup.txt" \
+             > "${LOG}/${id}.markdup.log" 2>&1 \
+             || die "$id: MarkDuplicates failed — see ${LOG}/${id}.markdup.log"
+        [[ -s "$dedup" ]] || die "$id: MarkDuplicates wrote no BAM"
+
+        samtools index "$dedup"
+        [[ -s "${dedup}.bai" ]] || die "$id: no index for ${dedup}"
+
+        samtools flagstat "$dedup" > "${LOG}/${id}.flagstat.txt"
+        [[ -s "${LOG}/${id}.flagstat.txt" ]] || die "$id: flagstat wrote nothing"
+
+        log "$id: duplicates marked, indexed"
+    done < <(tail -n +2 "$SHEET")
+}
+
+#=============================================================================
+# 5 · quantify — per-sample variant calling into a GVCF
+#=============================================================================
+stage_quantify() {
+    local id cond rep lt r1 r2 dedup gvcf n
+    while IFS=, read -r id cond rep lt r1 r2; do
+        dedup="${ALN}/${id}.dedup.bam"
+        gvcf="${GVCF}/${id}.g.vcf.gz"
+
+        gatk HaplotypeCaller -R "$REF" -I "$dedup" -O "$gvcf" \
+             -ERC GVCF -L "$REGION" \
+             > "${LOG}/${id}.haplotypecaller.log" 2>&1 \
+             || die "$id: HaplotypeCaller failed — see ${LOG}/${id}.haplotypecaller.log"
+
+        [[ -s "$gvcf" ]]       || die "$id: no GVCF written"
+        [[ -s "${gvcf}.tbi" ]] || die "$id: GVCF has no index"
+
+        # count the records (lines not starting with #). A GVCF with none is empty.
+        n=$(gzip -dc "$gvcf" | awk '!/^#/ { n++ } END { print n + 0 }')
+        (( n > 0 )) || die "$id: GVCF has no records"
+        log "$id: GVCF written, ${n} records"
+    done < <(tail -n +2 "$SHEET")
+}
+
+#=============================================================================
+# 6 · merge — joint genotyping across every sample
+#
+# THIS IS THE BARRIER. It needs every sample's GVCF, and the only reason it
+# works here is that stage 5's loop ran to completion for all of them.
+#=============================================================================
+stage_merge() {
+    local id cond rep lt r1 r2
+    local db="${OUTDIR}/genomicsdb"
+    local vcf="${RES}/cohort.vcf.gz"
+    local inputs=()
+
+    # one -V per sample, read from the samplesheet -- no sample named in the code
+    while IFS=, read -r id cond rep lt r1 r2; do
+        [[ -s "${GVCF}/${id}.g.vcf.gz" ]] || die "$id: no GVCF from stage 5"
+        inputs+=(-V "${GVCF}/${id}.g.vcf.gz")
+    done < <(tail -n +2 "$SHEET")
+
+    # GenomicsDBImport refuses to write into a folder that already exists,
+    # so clear the one from any earlier run first
+    rm -rf "$db"
+    gatk GenomicsDBImport "${inputs[@]}" --genomicsdb-workspace-path "$db" -L "$REGION" \
+         > "${LOG}/genomicsdbimport.log" 2>&1 \
+         || die "GenomicsDBImport failed — see ${LOG}/genomicsdbimport.log"
+
+    gatk GenotypeGVCFs -R "$REF" -V "gendb://${db}" -O "$vcf" \
+         > "${LOG}/genotypegvcfs.log" 2>&1 \
+         || die "GenotypeGVCFs failed — see ${LOG}/genotypegvcfs.log"
+
+    [[ -s "$vcf" ]]       || die "joint genotyping wrote no VCF"
+    [[ -s "${vcf}.tbi" ]] || die "cohort VCF has no index"
+
+    # The column count must equal the sample count. If it does not, a sample
+    # was dropped somewhere above and nothing has said so.
+    local n_cols n_samples n_vars
+    n_cols=$(gzip -dc "$vcf" | awk -F'\t' '/^#CHROM/ { n = NF - 9 } END { print n + 0 }')
+    n_samples=$(awk -F, 'NR>1' "$SHEET" | wc -l)
+    (( n_cols == n_samples )) || die "cohort VCF has ${n_cols} sample columns for ${n_samples} samples"
+
+    n_vars=$(gzip -dc "$vcf" | awk '!/^#/ { n++ } END { print n + 0 }')
+    (( n_vars > 0 )) || die "cohort VCF has no variants"
+    log "joint genotyping: ${n_vars} variants x ${n_cols} samples"
+}
+
+
+#=============================================================================
 # 1-9 · placeholders — each is replaced as it is written
 #=============================================================================
-
-
-stage_postprocess() { die "stage postprocess not implemented yet"; }
-stage_quantify()    { die "stage quantify not implemented yet"; }
-stage_merge()       { die "stage merge not implemented yet"; }
 stage_analyze()     { die "stage analyze not implemented yet"; }
 stage_qc_report()   { die "stage qc_report not implemented yet"; }
 stage_publish()     { die "stage publish not implemented yet"; }
