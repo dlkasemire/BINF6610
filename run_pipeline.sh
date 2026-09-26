@@ -272,13 +272,127 @@ stage_merge() {
     log "joint genotyping: ${n_vars} variants x ${n_cols} samples"
 }
 
+#=============================================================================
+# 7 · analyze — hard-filter the cohort VCF
+#=============================================================================
+stage_analyze() {
+    local vcf="${RES}/cohort.vcf.gz"
+    local filtered="${RES}/cohort.filtered.vcf.gz"
+
+    # Filtering LABELS variants in the FILTER column; it does not remove them.
+    # Thresholds are GATK's recommended hard-filter starting points.
+    gatk VariantFiltration -R "$REF" -V "$vcf" -O "$filtered" \
+         --filter-expression "QD < 2.0"   --filter-name QD2 \
+         --filter-expression "QUAL < 30.0" --filter-name QUAL30 \
+         --filter-expression "FS > 60.0"  --filter-name FS60 \
+         --filter-expression "SOR > 3.0"  --filter-name SOR3 \
+         --filter-expression "MQ < 40.0"  --filter-name MQ40 \
+         > "${LOG}/variantfiltration.log" 2>&1 \
+         || die "VariantFiltration failed — see ${LOG}/variantfiltration.log"
+
+    [[ -s "$filtered" ]]       || die "filtering wrote no VCF"
+    [[ -s "${filtered}.tbi" ]] || die "filtered VCF has no index"
+
+    # Filtering only labels, so the record count must not change.
+    local n_in n_out n_pass
+    n_in=$(gzip -dc "$vcf" | awk '!/^#/ { n++ } END { print n + 0 }')
+    n_out=$(gzip -dc "$filtered" | awk '!/^#/ { n++ } END { print n + 0 }')
+    (( n_in == n_out )) || die "filtering changed the record count: ${n_in} in, ${n_out} out"
+
+    n_pass=$(gzip -dc "$filtered" | awk -F'\t' '!/^#/ && $7 == "PASS" { n++ } END { print n + 0 }')
+    log "filtering: ${n_pass} of ${n_out} variants PASS"
+}
 
 #=============================================================================
-# 1-9 · placeholders — each is replaced as it is written
+# 8 · qc_report — MultiQC over every log this run produced
 #=============================================================================
-stage_analyze()     { die "stage analyze not implemented yet"; }
-stage_qc_report()   { die "stage qc_report not implemented yet"; }
-stage_publish()     { die "stage publish not implemented yet"; }
+stage_qc_report() {
+    multiqc -q -f -o "$RES" "$QC" "$LOG" > "${LOG}/multiqc.log" 2>&1 \
+        || die "MultiQC failed — see ${LOG}/multiqc.log"
+    [[ -s "${RES}/multiqc_report.html" ]] || die "multiqc produced no report"
+    log "QC report written"
+}
+
+#=============================================================================
+# 9 · publish — the contract boundary: tidy TSVs + manifest.json
+#=============================================================================
+stage_publish() {
+    local id cond rep lt r1 r2
+    local filtered="${RES}/cohort.filtered.vcf.gz"
+    [[ -s "$filtered" ]] || die "no filtered VCF from stage 7"
+
+    # --- samples.tsv: who is in which group, with the synthetic label marked ---
+    printf 'sample_id\tcondition\tcondition_is_synthetic\treplicate\tlibrary_type\n' > "${RES}/samples.tsv"
+    while IFS=, read -r id cond rep lt r1 r2; do
+        printf '%s\t%s\t%s\t%s\t%s\n' "$id" "$cond" "$CONDITION_IS_SYNTHETIC" "$rep" "$lt" >> "${RES}/samples.tsv"
+    done < <(tail -n +2 "$SHEET")
+
+    # --- variants.tsv: one row per variant, one genotype column per sample ---
+    gzip -dc "$filtered" | awk -F'\t' '
+        /^##/     { next }
+        /^#CHROM/ { printf "chrom\tpos\tref\talt\tqual\tfilter"
+                    for (i = 10; i <= NF; i++) printf "\t%s", $i
+                    printf "\n"; next }
+                  { printf "%s\t%s\t%s\t%s\t%s\t%s", $1, $2, $4, $5, $6, $7
+                    for (i = 10; i <= NF; i++) { split($i, f, ":"); printf "\t%s", f[1] }
+                    printf "\n" }
+    ' > "${RES}/variants.tsv"
+
+    local n_vcf n_tsv n_pass
+    n_vcf=$(gzip -dc "$filtered" | awk '!/^#/ { n++ } END { print n + 0 }')
+    n_tsv=$(awk 'NR > 1 { n++ } END { print n + 0 }' "${RES}/variants.tsv")
+    (( n_vcf == n_tsv )) || die "variants.tsv has ${n_tsv} rows for ${n_vcf} VCF records"
+    n_pass=$(awk -F'\t' 'NR > 1 && $6 == "PASS" { n++ } END { print n + 0 }' "${RES}/variants.tsv")
+
+    # --- which code produced this: the commit, plus -dirty if files changed since ---
+    local sha
+    if sha=$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null); then
+        git -C "$SCRIPT_DIR" diff --quiet HEAD 2>/dev/null || sha="${sha}-dirty"
+    else
+        sha="unknown"
+    fi
+
+    # --- tool versions: record what each tool says about itself ---
+    local v_fastqc v_fastp v_bwa v_samtools v_gatk v_multiqc
+    v_fastqc=$(fastqc --version 2>&1 | awk 'NR == 1')
+    v_fastp=$(fastp --version 2>&1 | awk 'NR == 1')
+    v_bwa=$( { bwa 2>&1 || true; } | awk '/^Version/ { print $2 }')
+    v_samtools=$(samtools --version 2>&1 | awk 'NR == 1')
+    v_gatk=$(gatk --version 2>&1 | awk '/Genome Analysis Toolkit/ { v = $NF } END { print v }')
+    v_multiqc=$(multiqc --version 2>&1 | awk 'NR == 1')
+
+    # --- manifest.json, written line by line ---
+    local n_samples
+    n_samples=$(awk -F, 'NR > 1' "$SHEET" | wc -l)
+    {
+        printf '{\n'
+        printf '  "pipeline": "variant-calling week 1",\n'
+        printf '  "run_finished": "%s",\n'  "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        printf '  "git_sha": "%s",\n'       "$sha"
+        printf '  "samplesheet": "%s",\n'   "$SHEET"
+        printf '  "reference": "%s",\n'     "$REF"
+        printf '  "region": "%s",\n'        "$REGION"
+        printf '  "n_samples": %d,\n'       "$n_samples"
+        printf '  "n_variants": %d,\n'      "$n_vcf"
+        printf '  "n_pass": %d,\n'          "$n_pass"
+        printf '  "condition_is_synthetic": %s,\n' "$CONDITION_IS_SYNTHETIC"
+        printf '  "tools": {\n'
+        printf '    "fastqc": "%s",\n'   "$v_fastqc"
+        printf '    "fastp": "%s",\n'    "$v_fastp"
+        printf '    "bwa": "%s",\n'      "$v_bwa"
+        printf '    "samtools": "%s",\n' "$v_samtools"
+        printf '    "gatk": "%s",\n'     "$v_gatk"
+        printf '    "multiqc": "%s"\n'   "$v_multiqc"
+        printf '  },\n'
+        printf '  "outputs": ["cohort.filtered.vcf.gz", "variants.tsv", "samples.tsv", "multiqc_report.html"]\n'
+        printf '}\n'
+    } > "${RES}/manifest.json"
+
+    [[ -s "${RES}/manifest.json" ]] || die "no manifest written"
+    log "published: ${n_vcf} variants (${n_pass} PASS), ${n_samples} samples, git ${sha}"
+    log "results in ${RES}:"
+    ls -1 "$RES" >&2
+}
 
 #=============================================================================
 # the driver — ten stages, in order, one after another
