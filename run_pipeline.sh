@@ -22,6 +22,12 @@ source "${SCRIPT_DIR}/conf/pipeline.env"
 
 log "REF=${REF} REGION=${REGION} THREADS=${THREADS}"
 
+# ---------- output folders ----------
+# Everything the run makes lives under OUTDIR, so rm -rf OUTDIR is a full reset
+QC="${OUTDIR}/qc_raw"; TRIM="${OUTDIR}/trim"; ALN="${OUTDIR}/align"
+GVCF="${OUTDIR}/gvcf"; LOG="${OUTDIR}/logs"; RES="${OUTDIR}/results"
+mkdir -p "$QC" "$TRIM" "$ALN" "$GVCF" "$LOG" "$RES"
+
 #=============================================================================
 # 0 · validate — check everything before computing anything
 #=============================================================================
@@ -91,9 +97,32 @@ stage_validate() {
 }
 
 #=============================================================================
+# 1 · qc_raw — FastQC on the reads as they arrived
+#=============================================================================
+stage_qc_raw() {
+    local id cond rep lt r1 r2 base
+    while IFS=, read -r id cond rep lt r1 r2; do
+        fastqc -q -o "$QC" "$r1" > "${LOG}/${id}.fastqc.log" 2>&1
+        [[ "$lt" != paired ]] || fastqc -q -o "$QC" "$r2" >> "${LOG}/${id}.fastqc.log" 2>&1
+
+        # fastqc can exit 0 and write nothing. Ask the disk.
+        base=$(basename "$r1" .fastq.gz)
+        [[ -s "${QC}/${base}_fastqc.zip" ]] || die "$id: fastqc produced no report for R1"
+        # ADDED: check R2's report too, when there is one
+        if [[ "$lt" == paired ]]; then
+            base=$(basename "$r2" .fastq.gz)
+            [[ -s "${QC}/${base}_fastqc.zip" ]] || die "$id: fastqc produced no report for R2"
+        fi
+        log "$id: qc done"
+    done < <(tail -n +2 "$SHEET")
+}
+
+
+
+#=============================================================================
 # 1-9 · placeholders — each is replaced as it is written
 #=============================================================================
-stage_qc_raw()      { die "stage qc_raw not implemented yet"; }
+
 stage_trim()        { die "stage trim not implemented yet"; }
 stage_align()       { die "stage align not implemented yet"; }
 stage_postprocess() { die "stage postprocess not implemented yet"; }
