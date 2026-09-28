@@ -14,7 +14,3 @@ out/
 *.vcf.gz
 *.vcf.gz.tbi
 !smoke-run/cohort.filtered.vcf.gz
-
-# system and editor clutter
-  .DS_Store
-  .Rhistory
