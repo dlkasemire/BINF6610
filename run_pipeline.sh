@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# run_pipeline.sh — ten-stage variant-calling pipeline
+# run_pipeline.sh: Ten-stage variant-calling pipeline
 # usage: ./run_pipeline.sh <samplesheet.csv> <outdir> [last-stage]
 set -euo pipefail
 
@@ -11,7 +11,7 @@ die() { log "ERROR: $*"; exit 1; }
 [[ $# -ge 2 ]] || die "usage: $0 <samplesheet.csv> <outdir> [last-stage]"
 SHEET=$1
 OUTDIR=$2
-LAST=${3:-publish}      # no third argument means run everything
+LAST=${3:-publish}      # no third argument which means run everything
 
 log "samplesheet=${SHEET} outdir=${OUTDIR} last=${LAST}"
 
@@ -23,7 +23,7 @@ source "${SCRIPT_DIR}/conf/pipeline.env"
 log "REF=${REF} REGION=${REGION} THREADS=${THREADS}"
 
 # ---------- output folders ----------
-# Everything the run makes lives under OUTDIR, so rm -rf OUTDIR is a full reset
+# Everything the run makes lives under OUTDIR
 QC="${OUTDIR}/qc_raw"; TRIM="${OUTDIR}/trim"; ALN="${OUTDIR}/align"
 GVCF="${OUTDIR}/gvcf"; LOG="${OUTDIR}/logs"; RES="${OUTDIR}/results"
 mkdir -p "$QC" "$TRIM" "$ALN" "$GVCF" "$LOG" "$RES"
@@ -108,7 +108,7 @@ stage_qc_raw() {
         # fastqc can exit 0 and write nothing. Ask the disk.
         base=$(basename "$r1" .fastq.gz)
         [[ -s "${QC}/${base}_fastqc.zip" ]] || die "$id: fastqc produced no report for R1"
-        # ADDED: check R2's report too, when there is one
+        # Check R2's report too, when there is one
         if [[ "$lt" == paired ]]; then
             base=$(basename "$r2" .fastq.gz)
             [[ -s "${QC}/${base}_fastqc.zip" ]] || die "$id: fastqc produced no report for R2"
@@ -153,9 +153,6 @@ stage_align() {
         # sample's column name in the VCF, so it must be the sample_id.
         rg="@RG\tID:${id}\tSM:${id}\tLB:${id}\tPL:ILLUMINA"
 
-        # The SAM never touches disk: bwa's stdout goes down the pipe.
-        # Only safe because pipefail is on -- otherwise bwa could die and
-        # samtools would still exit 0 with an empty BAM.
         if [[ "$lt" == paired ]]; then
             bwa mem -t "$THREADS" -R "$rg" "$REF" \
                     "${TRIM}/${id}_R1.fastq.gz" "${TRIM}/${id}_R2.fastq.gz" \
@@ -166,7 +163,6 @@ stage_align() {
                     2> "${LOG}/${id}.bwa.log"
         fi | samtools sort -@ 2 -o "$bam" 2> "${LOG}/${id}.sort.log"
 
-        # BWA prints no alignment rate, so count it from the BAM.
         [[ -s "$bam" ]] || die "$id: no BAM written"
         total=$(samtools view -c "$bam")
         mapped=$(samtools view -c -F 4 "$bam")
@@ -231,8 +227,7 @@ stage_quantify() {
 #=============================================================================
 # 6 · merge — joint genotyping across every sample
 #
-# THIS IS THE BARRIER. It needs every sample's GVCF, and the only reason it
-# works here is that stage 5's loop ran to completion for all of them.
+# Needs every sample's GVCF
 #=============================================================================
 stage_merge() {
     local id cond rep lt r1 r2
@@ -314,7 +309,7 @@ stage_qc_report() {
 }
 
 #=============================================================================
-# 9 · publish — the contract boundary: tidy TSVs + manifest.json
+# 9 · publish — the contract boundary: tidy TSVs + run_info.tsv
 #=============================================================================
 stage_publish() {
     local id cond rep lt r1 r2
@@ -344,6 +339,11 @@ stage_publish() {
     (( n_vcf == n_tsv )) || die "variants.tsv has ${n_tsv} rows for ${n_vcf} VCF records"
     n_pass=$(awk -F'\t' 'NR > 1 && $6 == "PASS" { n++ } END { print n + 0 }' "${RES}/variants.tsv")
 
+    # --- how many samples the samplesheet lists (every line except the header) ---
+    local n_samples
+    n_samples=$(awk -F, 'NR > 1' "$SHEET" | wc -l)
+    n_samples=$(( n_samples ))     # strip the spaces a Mac's wc puts in front
+
     # --- which code produced this: the commit, plus -dirty if files changed since ---
     local sha
     if sha=$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null); then
@@ -361,34 +361,26 @@ stage_publish() {
     v_gatk=$(gatk --version 2>&1 | awk '/Genome Analysis Toolkit/ { v = $NF } END { print v }')
     v_multiqc=$(multiqc --version 2>&1 | awk 'NR == 1')
 
-    # --- manifest.json, written line by line ---
-    local n_samples
-    n_samples=$(awk -F, 'NR > 1' "$SHEET" | wc -l)
+    # --- run_info.tsv: what produced this, in the demo's name<tab>value format ---
     {
-        printf '{\n'
-        printf '  "pipeline": "variant-calling week 1",\n'
-        printf '  "run_finished": "%s",\n'  "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-        printf '  "git_sha": "%s",\n'       "$sha"
-        printf '  "samplesheet": "%s",\n'   "$SHEET"
-        printf '  "reference": "%s",\n'     "$REF"
-        printf '  "region": "%s",\n'        "$REGION"
-        printf '  "n_samples": %d,\n'       "$n_samples"
-        printf '  "n_variants": %d,\n'      "$n_vcf"
-        printf '  "n_pass": %d,\n'          "$n_pass"
-        printf '  "condition_is_synthetic": %s,\n' "$CONDITION_IS_SYNTHETIC"
-        printf '  "tools": {\n'
-        printf '    "fastqc": "%s",\n'   "$v_fastqc"
-        printf '    "fastp": "%s",\n'    "$v_fastp"
-        printf '    "bwa": "%s",\n'      "$v_bwa"
-        printf '    "samtools": "%s",\n' "$v_samtools"
-        printf '    "gatk": "%s",\n'     "$v_gatk"
-        printf '    "multiqc": "%s"\n'   "$v_multiqc"
-        printf '  },\n'
-        printf '  "outputs": ["cohort.filtered.vcf.gz", "variants.tsv", "samples.tsv", "multiqc_report.html"]\n'
-        printf '}\n'
-    } > "${RES}/manifest.json"
+        printf 'run_finished\t%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        printf 'git_commit\t%s\n'   "$sha"
+        printf 'samplesheet\t%s\n'  "$SHEET"
+        printf 'reference\t%s\n'    "$REF"
+        printf 'region\t%s\n'       "$REGION"
+        printf 'n_samples\t%d\n'    "$n_samples"
+        printf 'n_variants\t%d\n'   "$n_vcf"
+        printf 'n_pass\t%d\n'       "$n_pass"
+        printf 'condition_is_synthetic\t%s\n' "$CONDITION_IS_SYNTHETIC"
+        printf 'fastqc\t%s\n'   "$v_fastqc"
+        printf 'fastp\t%s\n'    "$v_fastp"
+        printf 'bwa\t%s\n'      "$v_bwa"
+        printf 'samtools\t%s\n' "$v_samtools"
+        printf 'gatk\t%s\n'     "$v_gatk"
+        printf 'multiqc\t%s\n'  "$v_multiqc"
+    } > "${RES}/run_info.tsv"
+    [[ -s "${RES}/run_info.tsv" ]] || die "no run_info.tsv written"
 
-    [[ -s "${RES}/manifest.json" ]] || die "no manifest written"
     log "published: ${n_vcf} variants (${n_pass} PASS), ${n_samples} samples, git ${sha}"
     log "results in ${RES}:"
     ls -1 "$RES" >&2
