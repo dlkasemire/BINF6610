@@ -1,0 +1,9 @@
+sample_id,condition,replicate,library_type,r1_fastq,r2_fastq
+NA12878,affected,1,paired,/courses/BINF6610.202710/data/fastq-variant/NA12878_R1.fastq.gz,/courses/BINF6610.202710/data/fastq-variant/NA12878_R2.fastq.gz
+NA12891,affected,2,paired,/courses/BINF6610.202710/data/fastq-variant/NA12891_R1.fastq.gz,/courses/BINF6610.202710/data/fastq-variant/NA12891_R2.fastq.gz
+NA12892,unaffected,1,single,/courses/BINF6610.202710/data/fastq-variant/NA12892_R1.fastq.gz,
+NA07357,unaffected,2,paired,/courses/BINF6610.202710/data/fastq-variant/NA07357_R1.fastq.gz,/courses/BINF6610.202710/data/fastq-variant/NA07357_R2.fastq.gz
+NA12003,affected,3,single,/courses/BINF6610.202710/data/fastq-variant/NA12003_R1.fastq.gz,
+NA10851,unaffected,3,paired,/courses/BINF6610.202710/data/fastq-variant/NA10851_R1.fastq.gz,/courses/BINF6610.202710/data/fastq-variant/NA10851_R2.fastq.gz
+NA12813,affected,4,paired,/courses/BINF6610.202710/data/fastq-variant/NA12813_R1.fastq.gz,/courses/BINF6610.202710/data/fastq-variant/NA12813_R2.fastq.gz
+NA12873,unaffected,4,paired,/courses/BINF6610.202710/data/fastq-variant/NA12873_R1.fastq.gz,/courses/BINF6610.202710/data/fastq-variant/NA12873_R2.fastq.gz
