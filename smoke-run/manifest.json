@@ -1,0 +1,46 @@
+{
+  "pipeline": {
+    "name": "variant-call",
+    "version": "1.0.0",
+    "implementation": "bash",
+    "git_sha": "dd03c23613ca9b4933ead66368e5f7b0ba031cbb",
+    "run_id": "2026-09-28T02:23:47Z-dd03c23",
+    "started_at": "2026-09-28T02:23:47Z",
+    "finished_at": "2026-09-28T02:25:14Z",
+    "exit_status": "success"
+  },
+  "platform": {
+    "kind": "laptop",
+    "region": "smoke_1mb",
+    "host": "Lindas-MacBook-Air.local",
+    "slurm_job_id": "none",
+    "slurm_cpus": "none",
+    "container": "none"
+  },
+  "reference": {"genome": "/Users/lindadk/Documents/Scientific_computing/smoke/smoke.fa"},
+  "samples": [
+    {"sample_id": "smoke_01", "library_type": "paired", "condition": "unaffected"},
+    {"sample_id": "smoke_02", "library_type": "paired", "condition": "affected"},
+    {"sample_id": "smoke_03", "library_type": "single", "condition": "affected"}
+  ],
+  "outputs": [
+    {"stage": "analyze", "type": "vcf", "path": "cohort.filtered.vcf.gz", "checksum": "sha256:f8a0b6a90b27472884b25e8ee74eecdb2b01984ab5f432f5a6662767cf016831"},
+    {"stage": "analyze", "type": "vcf_index", "path": "cohort.filtered.vcf.gz.tbi", "checksum": "sha256:477049562ec67eade30ad2ad8e56ea1c56e9f655e946b02bc58f1eeac821efed"},
+    {"stage": "analyze", "type": "vcf", "path": "cohort.vcf.gz", "checksum": "sha256:f386a08f1c0ccf15d3a586f997137b1ddc06e25404b047b354807ccc348d7a12"},
+    {"stage": "analyze", "type": "vcf_index", "path": "cohort.vcf.gz.tbi", "checksum": "sha256:2adc953d3aa1a4413ff7237d2af7a77d93c625ad8b4f8f8f6b69bd17a1f1ac9a"},
+    {"stage": "qc_report", "type": "multiqc", "path": "multiqc_report.html", "checksum": "sha256:28d21d5bf1599cbb23be057ef3d1e0b812ade95da27a83d89f749b014aabc0d9"},
+    {"stage": "publish", "type": "file", "path": "run_info.tsv", "checksum": "sha256:28dd2c1d6eb42a117b663e92c448b7578f3cdddf0f39dcebb533fcd86b387b42"},
+    {"stage": "publish", "type": "samples", "path": "samples.tsv", "checksum": "sha256:aea3b2211b6cab8b99694b24c701a878e3559bc036d7fd2b82b9d92dab2a7778"},
+    {"stage": "analyze", "type": "variant_table", "path": "variants.tsv", "checksum": "sha256:9a36f6479498f8f815a1e2dbf886ec58c168fb840a899906b54d694cb71deed6"}
+  ],
+  "metrics": [],
+  "tools": {
+    "bwa": "0.7.19-r1273",
+    "samtools": "1.24",
+    "bcftools": "1.24",
+    "gatk": "4.6.2.0",
+    "fastqc": "0.12.1",
+    "fastp": "1.3.7",
+    "multiqc": "1.35"
+  }
+}
