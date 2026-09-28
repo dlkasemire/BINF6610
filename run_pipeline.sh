@@ -2,6 +2,8 @@
 # run_pipeline.sh: Ten-stage variant-calling pipeline
 # usage: ./run_pipeline.sh <samplesheet.csv> <outdir> [last-stage]
 set -euo pipefail
+HERE=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+export RUN_STARTED=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 # All messages go to stderr (>&2), so stdout stays clean for data
 log() { printf '[%s] %s\n' "$(date +%H:%M:%S)" "$*" >&2; }
@@ -380,6 +382,10 @@ stage_publish() {
         printf 'multiqc\t%s\n'  "$v_multiqc"
     } > "${RES}/run_info.tsv"
     [[ -s "${RES}/run_info.tsv" ]] || die "no run_info.tsv written"
+
+    # manifest.json; written by the course's script, from everything in results/
+    bash "${HERE}/lib/write_manifest.sh" "${RES}" "${SHEET}" "${REF}" "${REGION}"
+    [[ -s "${RES}/manifest.json" ]] || die "no manifest.json written"
 
     log "published: ${n_vcf} variants (${n_pass} PASS), ${n_samples} samples, git ${sha}"
     log "results in ${RES}:"
