@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # run_pipeline.sh — ten-stage variant-calling pipeline, for EVERY sample.
-# usage: ./run_pipeline.sh <samplesheet.csv> <outdir> [last-stage]
+# usage: ./run_pipeline.sh <samplesheet.csv> <outdir> [last-stage] [first-stage]
+#
+# first-stage is for the cluster's cohort job, which starts at merge because
+# the array tasks have already run stages 0-5 for every sample.
 #
 # The stages live in stages/, one per file, and what they share lives in
 # lib/common.sh. run_sample.sh calls the same stages for one sample.
@@ -15,6 +18,7 @@ source "${HERE}/lib/common.sh"
 SHEET=$1
 OUTDIR=$2
 LAST=${3:-publish}      # no third argument means run everything
+FIRST=${4:-validate}    # no fourth argument means start at the beginning
 SAMPLE=""               # empty: every stage works on every sample in the sheet
 
 # ---------- the stages ----------
@@ -28,17 +32,30 @@ for stage in "${STAGES[@]}"; do
 done
 (( known )) || die "unknown stage: ${LAST} (choose from: ${STAGES[*]})"
 
-log "samplesheet=${SHEET} outdir=${OUTDIR} last=${LAST}"
+known=0
+for stage in "${STAGES[@]}"; do
+    [[ "$stage" == "$FIRST" ]] && known=1
+done
+(( known )) || die "unknown stage: ${FIRST} (choose from: ${STAGES[*]})"
+
+log "samplesheet=${SHEET} outdir=${OUTDIR} first=${FIRST} last=${LAST}"
 log "REF=${REF} REGION=${REGION} THREADS=${THREADS}"
 setup_dirs
 
 # ---------- the driver ----------
 n=0
+started=0
 for stage in "${STAGES[@]}"; do
-    log "===== stage ${n} : ${stage} ====="
-    "stage_${stage}"
+    [[ "$stage" == "$FIRST" ]] && started=1
+    if (( started )); then
+        log "===== stage ${n} : ${stage} ====="
+        "stage_${stage}"
+    fi
     [[ "$stage" == "$LAST" ]] && break
     n=$(( n + 1 ))
 done
+
+# A first stage that comes after the last one would run nothing and exit 0.
+(( started )) || die "first stage ${FIRST} comes after last stage ${LAST}; nothing ran"
 
 log "done: stopped after ${LAST}"
