@@ -18,7 +18,7 @@ stage_align() {
             bwa mem -t "$THREADS" -R "$rg" "$REF" \
                     "${TRIM}/${id}_R1.fastq.gz" \
                     2> "${LOG}/${id}.bwa.log"
-        fi | samtools sort -@ 2 -o "$bam" 2> "${LOG}/${id}.sort.log"
+        fi | samtools sort -@ "$THREADS" -T "${TMPDIR:-/tmp}/sort.${id}.$$" -o "$bam" 2> "${LOG}/${id}.sort.log"
 
         # BWA prints no alignment rate, so count it from the BAM.
         [[ -s "$bam" ]] || die "$id: no BAM written"

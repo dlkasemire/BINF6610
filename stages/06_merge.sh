@@ -7,7 +7,9 @@ set -euo pipefail   # already set by the driver that sources this; stated here s
 # dependency is what guarantees every array task has finished first.
 stage_merge() {
     local id cond rep lt r1 r2
-    local db="${OUTDIR}/genomicsdb"
+    
+    # The workspace is written by GenomicsDBImport and read back by GenotypeGVCFs.
+    local db="${TMPDIR:-/tmp}/genomicsdb"	
     local vcf="${RES}/cohort.vcf.gz"
     local inputs=()
 
@@ -24,7 +26,7 @@ stage_merge() {
          > "${LOG}/genomicsdbimport.log" 2>&1 \
          || die "GenomicsDBImport failed — see ${LOG}/genomicsdbimport.log"
 
-    gatk GenotypeGVCFs -R "$REF" -V "gendb://${db}" -O "$vcf" \
+    gatk GenotypeGVCFs -R "$REF" -V "gendb://${db}" -L "$REGION" -O "$vcf" \
          > "${LOG}/genotypegvcfs.log" 2>&1 \
          || die "GenotypeGVCFs failed — see ${LOG}/genotypegvcfs.log"
 
