@@ -1,0 +1,53 @@
+{
+  "pipeline": {
+    "name": "variant-call",
+    "version": "1.0.0",
+    "implementation": "slurm",
+    "git_sha": "8d3692d10bc3090fe6ef0f43842ade19a7a0af92",
+    "run_id": "2026-10-01T19:16:48Z-8d3692d",
+    "started_at": "2026-10-01T19:16:48Z",
+    "finished_at": "2026-10-01T19:25:36Z",
+    "exit_status": "success"
+  },
+  "platform": {
+    "kind": "slurm",
+    "region": "chr20:1-10000000",
+    "host": "c3014",
+    "slurm_job_id": "10745464",
+    "slurm_cpus": "4",
+    "container": "none"
+  },
+  "reference": {"genome": "/courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa"},
+  "samples": [
+    {"sample_id": "NA12878", "library_type": "paired", "condition": "affected"},
+    {"sample_id": "NA12891", "library_type": "paired", "condition": "affected"},
+    {"sample_id": "NA12892", "library_type": "single", "condition": "unaffected"},
+    {"sample_id": "NA07357", "library_type": "paired", "condition": "unaffected"},
+    {"sample_id": "NA12003", "library_type": "single", "condition": "affected"},
+    {"sample_id": "NA10851", "library_type": "paired", "condition": "unaffected"},
+    {"sample_id": "NA12813", "library_type": "paired", "condition": "affected"},
+    {"sample_id": "NA12873", "library_type": "paired", "condition": "unaffected"}
+  ],
+  "outputs": [
+    {"stage": "analyze", "type": "vcf", "path": "cohort.filtered.vcf.gz", "checksum": "sha256:7d89ff004b81a6a42449681f61d26306a97308df5c5f8540adec08be961d0612"},
+    {"stage": "analyze", "type": "vcf_index", "path": "cohort.filtered.vcf.gz.tbi", "checksum": "sha256:6a93d468768fdad3e8b50d7348bb8f4f2c3c647fc45dc006d2d0156470f67298"},
+    {"stage": "analyze", "type": "vcf", "path": "cohort.vcf.gz", "checksum": "sha256:d243ec85334bd6b3e535c74a785d39651572d4883dea4d87503c47176d62a30c"},
+    {"stage": "analyze", "type": "vcf_index", "path": "cohort.vcf.gz.tbi", "checksum": "sha256:44676b677a2a73827206a99a7c2cfb824d81671e3c672e2e5c41f5fb798b3082"},
+    {"stage": "qc_report", "type": "multiqc", "path": "multiqc_report.html", "checksum": "sha256:485e60c13745542463e50169fa3da4c93329fa5e66d700fd18e79bb5cce2f20a"},
+    {"stage": "publish", "type": "file", "path": "run_info.tsv", "checksum": "sha256:7db891efed0c9fd070c96925def16906adeb6b1c3f29d4918398ebf8fd29d509"},
+    {"stage": "publish", "type": "samples", "path": "samples.tsv", "checksum": "sha256:08bd2bbd1fbd344bb63dc437f751aa5bbdd3064be9a6e1d4428fc3434eb61c1b"},
+    {"stage": "analyze", "type": "variant_table", "path": "variants.tsv", "checksum": "sha256:57c7629181cbb40e0ce95821bd39f6e3faeaedc3aa0fc7a0a7a4249a11c87820"}
+  ],
+  "metrics": [],
+  "tools": {
+    "bwa": "0.7.19-r1273",
+    "samtools": "1.24",
+    "bcftools": "1.24",
+    "gatk": "4.6.2.0",
+    "fastqc": "0.12.1",
+    "fastp": "1.3.7",
+    "multiqc": "1.35",
+    "hisat2": "2.2.3",
+    "featureCounts": "2.1.1"
+  }
+}
