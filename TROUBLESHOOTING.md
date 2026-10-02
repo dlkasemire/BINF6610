@@ -143,8 +143,37 @@ the broken file.
 
 ### 1 · An unpinned recipe, rebuilt a day later
 
-(Day 1 built on 2026-10-01 from `FROM ubuntu` + `apt-get install -y curl`, 122 lines
-of `dpkg -l`; the `--pull --no-cache` rebuild and its diff follow.)
+In a scratch folder outside the repository I built this recipe on the evening
+of 2026-10-01, and rebuilt it the next evening with `--pull --no-cache`:
+
+    FROM ubuntu
+    RUN apt-get update && apt-get install -y curl
+
+    $ docker build --platform linux/amd64 -t unpinned:day1 .
+    $ docker run --rm --platform linux/amd64 unpinned:day1 dpkg -l > day1-packages.txt
+    ... a day later ...
+    $ docker build --pull --no-cache --platform linux/amd64 -t unpinned:day2 .
+    $ docker run --rm --platform linux/amd64 unpinned:day2 dpkg -l > day2-packages.txt
+    $ diff day1-packages.txt day2-packages.txt
+    115c115
+    < ii  rust-coreutils   0.8.0-0ubuntu3            amd64  Universal coreutils utils, written in Rust
+    ---
+    > ii  rust-coreutils   0.10.0-1ubuntu2~26.04.1   amd64  Universal coreutils utils, written in Rust
+
+    $ docker image inspect --format '{{.Id}}' unpinned:day1 unpinned:day2
+    sha256:019ac2be2e0310dc8bc81ed1a24ac2f40d966f45d76c659c23c4c231fd4d647d
+    sha256:de9b1fe77caaf1e78f0726e032b75cd706e6ab3c98d2671e47bb062c0f8844ed
+
+Both lists have 122 lines and the same packages, but one changed version:
+rust-coreutils, which provides ls, cp, cat, sort and wc, went from 0.8.0 to
+0.10.0, an update Ubuntu published to 26.04 between my two builds. The build
+log showed `FROM ubuntu` resolving to `ubuntu:latest@sha256:3595d7fc...`, and
+the two images have different IDs. Nothing in the recipe changed, yet the
+commands inside the image did, and I never asked for that package. Fix: pin
+everything, as containers/Dockerfile does: a tagged base image
+(`mambaorg/micromamba:2.0.5-ubuntu24.04`), `=version` on every tool, and the
+pushed image recorded by its digest, so a later rebuild cannot silently
+change what runs.
 
 ### 2 · No --bind: the container could not see /courses
 
