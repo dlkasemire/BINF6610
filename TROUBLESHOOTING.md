@@ -137,3 +137,68 @@ full (22.7 MB) with its .tbi. That is safe only because my stages never skip
 work, which also means the rerun repeated stages 0–4 that had been fine;
 adding a skip would need write-to-.tmp-then-rename first, or it would trust
 the broken file.
+
+
+# Assignment 3 — four deliberate failures with the container
+
+### 1 · An unpinned recipe, rebuilt a day later
+
+(Day 1 built on 2026-10-01 from `FROM ubuntu` + `apt-get install -y curl`, 122 lines
+of `dpkg -l`; the `--pull --no-cache` rebuild and its diff follow.)
+
+### 2 · No --bind: the container could not see /courses
+
+I deleted the `--bind /courses/BINF6610.202710,/scratch/${USER}` line from
+01_persample.sbatch and ran task 1 (`sbatch --array=1 01_persample.sbatch`).
+
+    JobID                     State    Elapsed ExitCode
+    10753223_1               FAILED   00:00:05      1:0
+
+    task 1: NA12878 on c3014, 4 cores, image /scratch/kasemire.d/containers/variant-call.sif
+    [23:24:25] ERROR: samplesheet not found: /courses/BINF6610.202710/data/samplesheet-variant8.csv
+
+It stopped in 5 seconds with exit 1, at run_sample.sh's first check. The path
+the container could not see was /courses/BINF6610.202710/data/samplesheet-variant8.csv:
+the job script, outside the container, had just read that same file to pick
+NA12878, but inside, without --bind, only my home directory, /tmp and the
+submit directory exist. Fix: put the --bind line back (`git restore`), which
+adds /courses (the samplesheet, FASTQs and reference) and /scratch/${USER}
+(the run directory).
+
+### 3 · No --env THREADS: the job held 8 cores and used 4
+
+I deleted the `--env THREADS="${THREADS}"` line from 01_persample.sbatch and ran
+task 1 with `sbatch --array=1 --cpus-per-task=8` (job 10753125). I asked for 8
+rather than my usual 4 because the pipeline's own default is THREADS=4, which
+would have hidden the difference.
+
+    JobID                     State    Elapsed  AllocCPUS
+    10753125_1           CANCELLED+   00:03:44          8
+
+    task 1: NA12878 on c3014, 8 cores, image /scratch/kasemire.d/containers/variant-call.sif
+    [23:18:50] REF=... REGION=chr20:1-10000000 THREADS=4
+    [main] CMD: bwa mem -t 4 -R @RG\tID:NA12878\tSM:NA12878\tLB:NA12878\tPL:ILLUMINA ...
+
+The job script set THREADS=8 from SLURM_CPUS_PER_TASK, but `--cleanenv` stopped
+it at the container, so lib/common.sh fell back to `THREADS=${THREADS:-4}` and
+bwa ran with `-t 4` on 8 allocated cores. Nothing failed and nothing warned;
+only the log shows it. (I cancelled the job myself once bwa had written its
+[main] CMD line; stages 4–5 were not needed.) Fix: put the line back
+(`git restore`), so every variable the job script exports and the pipeline
+reads is carried in by name.
+
+### 4 · An arm64 image on Explorer
+
+    $ apptainer pull --arch arm64 arm.sif docker://ubuntu:24.04; echo "pull exit: $?"
+    INFO:    Creating SIF file...
+    pull exit: 0
+    $ apptainer exec arm.sif uname -m; echo "run exit: $?"
+    FATAL:   While checking container encryption: could not open image /scratch/kasemire.d/arm.sif: the image's architecture (arm64) could not run on the host's (amd64)
+    run exit: 255
+
+On a compute node (c3014) the pull succeeded without a warning, and the image
+only failed when something tried to run in it, with exit 255. This is what an
+image built on an Apple-silicon laptop without `--platform` would do.
+Fix: build with `docker build --platform linux/amd64 ...` and check
+`docker image inspect --format '{{.Architecture}}'` prints amd64 before pushing,
+as I did for dlkasemire/variant-call:1.0.
