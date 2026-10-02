@@ -139,7 +139,7 @@ adding a skip would need write-to-.tmp-then-rename first, or it would trust
 the broken file.
 
 
-# Assignment 3 — four deliberate failures with the container
+# Assignment 3: four deliberate failures with the container
 
 ### 1 · An unpinned recipe, rebuilt a day later
 
