@@ -67,3 +67,73 @@ genotype is not `0/0` at its position:
 smoke_03 is single-end at about 9x depth, so some positions have too few
 reads for a confident heterozygous call; this matches the 92–100 % range the
 assignment gives for a complete pipeline.
+
+
+
+# Assignment 2 — four deliberate failures on Explorer
+
+### 1 · The TIMEOUT (--time=00:02:00)
+
+    JobID                     State    Elapsed ExitCode
+    10750177_1              TIMEOUT   00:02:18      0:0
+    10750177_1.batch      CANCELLED   00:02:21     0:15
+
+The log reached stage 3 (`===== NA12878 · stage 3 : align =====`) and then
+Slurm wrote `CANCELLED AT 2026-10-01T19:24:33 DUE TO TIME LIMIT`; the 15 in
+the batch step's exit code is SIGTERM. Stages 0–2 had finished: qc_raw/ held
+both FastQC reports and trim/ both trimmed FASTQs at full size (87 MB and
+91 MB). bwa.log existed, but align/ was empty: samtools sort was still
+collecting reads in its temporary files under ${TMPDIR} on the node, and it
+only writes the final BAM when it finishes, so no half-written BAM was left
+in the run directory. The temporary files were in /tmp/10750177, which the
+EXIT trap removes.
+
+### 2 · The failed task under afterok (task 2 made to exit 1)
+
+    JobID                     State               Reason
+    10750290              CANCELLED           Dependency
+    10750288_1           CANCELLED+                 None
+    10750288_2               FAILED                 None
+
+With a temporary line making task 2 `exit 1`, I submitted `bash submit.sh 1-2`.
+Task 2 failed at once, but the cohort job 10750290 was not cancelled straight
+away: squeue still showed it PENDING with reason (Dependency) while task 1 was
+running, because Slurm cannot decide whether the whole array succeeded until
+every task has ended. When I cancelled task 1, the array was finished with a
+failed task, afterok could never be satisfied, and the cohort job ended
+CANCELLED with Reason=Dependency, without ever starting. Stages 6–9 never ran
+on an incomplete set of samples. With afterany it would have started and
+genotyped only the samples whose GVCFs existed.
+
+### 3 · The out-of-range task (--array=9 against an eight-row samplesheet)
+
+    JobID                     State    Elapsed ExitCode
+    10750121_9               FAILED   00:00:09     64:0
+    10750121_9.batch         FAILED   00:00:09     64:0
+
+Task 9 looked for row 9 below the header, found none, and the guard in
+`01_persample.sbatch` stopped it before anything ran. Its log says only
+`task 9: no row 9 in /courses/BINF6610.202710/data/samplesheet-variant8.csv`.
+Without that guard SAMPLE would be empty. `run_sample.sh` would still refuse
+it (`${3:?}` rejects an empty sample_id), but with neither guard,
+`rows "$SHEET" ""` returns every row, so task 9 would have run stages 0–5 on
+all eight samples inside one task and finished COMPLETED: the one failure
+this week that is silent.
+
+### 4 · scancel mid-write, then resubmit: the partial file
+
+    JobID                     State    Elapsed ExitCode
+    10750576_1           CANCELLED+   00:04:59      0:0
+    10750576_1.batch      CANCELLED   00:05:02     0:15
+    10750663_1            COMPLETED   00:08:38      0:0
+
+My first attempt (10750484) finished before I cancelled it, so nothing was
+cut off; the second time I scripted it to cancel 60 s into stage 5. That left
+a partial file under its real name: gvcf/NA12878.g.vcf.gz at 4.2 MB, with no
+.tbi beside it, and `gzip -t` reported `unexpected end of file`. A check like
+`[[ -s file ]]` would have called it done. The rerun (10750663) did not trust
+it: its log shows all six stage headers, 0 to 5, and it rewrote the GVCF in
+full (22.7 MB) with its .tbi. That is safe only because my stages never skip
+work, which also means the rerun repeated stages 0–4 that had been fine;
+adding a skip would need write-to-.tmp-then-rename first, or it would trust
+the broken file.

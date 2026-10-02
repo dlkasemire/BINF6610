@@ -43,3 +43,42 @@ noise (different nodes, conda activation time); the 2-core run is clearly slower
 | --cpus-per-task | 8 | 4 | 4 cores was as fast as 8 (8:31 vs 7:38–10:29) for under half the core-minutes; 2 cores was ~50 % slower |
 | --mem | 16G | 12G | 6.9–7.5 GB used in every run; 8G worked but left only ~1 GB of headroom, and other samples may need more |
 | --time | 1:00:00 | 0:30:00 | the slowest run took 13:20; 30 min is over twice that |
+
+## The full run with those settings (array 10745456, cohort 10745464)
+
+| task | Elapsed | MaxRSS |
+|---|---|---|
+| 1 | 00:09:49 | 7450856K (7.5 GB) |
+| 2 | 00:09:28 | 11333008K (11.3 GB) |
+| 3 | 00:06:52 | 6297280K (6.3 GB) |
+| 4 | 00:10:45 | 6827616K (6.8 GB) |
+| 5 | 00:07:40 | 6423080K (6.4 GB) |
+| 6 | 00:10:46 | 7063372K (7.1 GB) |
+| 7 | 00:17:36 | 7728956K (7.7 GB) |
+| 8 | 00:10:46 | 7134452K (7.1 GB) |
+
+All eight COMPLETED at 4 cores and 12G. Task 2 needed 11.3 GB, far more than
+the ~7 GB the NA12878 runs showed, so the headroom in 12G was needed: 8G,
+which run C suggested, would have been exceeded. Task 7 was the slowest at
+17:36, nearly three times task 3, and the array is only as fast as that task.
+
+## The cohort job (stages 6–9)
+
+    10745464   COMPLETED   00:10:17   1470.50M   4 cores, 16G asked
+
+It asked for 4 cores and 16G and used 1.5 GB of memory. I set it to 2 cores
+and 4G in `02_cohort.sbatch`: under a tenth of the memory it reserved was
+used, and its stages (joint genotyping, filtering, MultiQC, publish) are
+mostly single-threaded.
+
+Job ID: 10745464
+Cluster: explorer
+User/Group: kasemire.d/users
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 4
+CPU Utilized: 00:09:12
+CPU Efficiency: 22.37% of 00:41:08 core-walltime
+Job Wall-clock time: 00:10:17
+Memory Utilized: 1.44 GB
+Memory Efficiency: 8.98% of 16.00 GB
