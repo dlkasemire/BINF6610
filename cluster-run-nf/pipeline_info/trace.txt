@@ -1,0 +1,46 @@
+task_id	name	status	exit	container	native_id	realtime	%cpu	peak_rss
+1	VALIDATE (samplesheet)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-coreutils_gawk_gzip-7c58ccc2f9ca6bcc.img	10914418	1m 57s	58.5%	11.1 MB
+6	FASTP (NA12891)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-fastp-1.3.7--075357a9d5c82494.img	10920399	29.5s	92.6%	1.1 GB
+3	FASTQC (NA12891)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/quay.io-biocontainers-fastqc-0.12.1--hdfd78af_0.img	10920424	33s	90.0%	559.2 MB
+2	FASTQC (NA12878)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/quay.io-biocontainers-fastqc-0.12.1--hdfd78af_0.img	10920421	32s	87.7%	596.6 MB
+5	FASTP (NA12878)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-fastp-1.3.7--075357a9d5c82494.img	10920398	28.3s	92.4%	1.1 GB
+7	FASTP (NA12892)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-fastp-1.3.7--075357a9d5c82494.img	10920401	34s	96.2%	1.3 GB
+10	FASTP (NA07357)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-fastp-1.3.7--075357a9d5c82494.img	10920400	26s	92.3%	1.1 GB
+4	FASTQC (NA12892)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/quay.io-biocontainers-fastqc-0.12.1--hdfd78af_0.img	10920426	17s	86.7%	426.9 MB
+9	FASTQC (NA07357)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/quay.io-biocontainers-fastqc-0.12.1--hdfd78af_0.img	10920427	31s	90.4%	542.1 MB
+12	FASTQC (NA12003)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/quay.io-biocontainers-fastqc-0.12.1--hdfd78af_0.img	10920428	19s	88.8%	423 MB
+13	FASTQC (NA10851)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/quay.io-biocontainers-fastqc-0.12.1--hdfd78af_0.img	10920429	33s	89.8%	576 MB
+14	FASTQC (NA12813)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/quay.io-biocontainers-fastqc-0.12.1--hdfd78af_0.img	10920430	48s	90.8%	605.2 MB
+15	FASTQC (NA12873)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/quay.io-biocontainers-fastqc-0.12.1--hdfd78af_0.img	10920431	35s	90.3%	597.4 MB
+8	BWA_MEM (NA12891)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-bwa_samtools-22527ddb3cc80fb3.img	10920436	2m 48s	386.7%	6.6 GB
+18	FASTP (NA10851)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-fastp-1.3.7--075357a9d5c82494.img	10920404	28.4s	94.0%	1.1 GB
+16	BWA_MEM (NA12878)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-bwa_samtools-22527ddb3cc80fb3.img	10920434	3m 2s	371.2%	6.6 GB
+20	MARKDUPLICATES (NA12891)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920483	33s	145.2%	12.8 GB
+11	FASTP (NA12003)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-fastp-1.3.7--075357a9d5c82494.img	10920402	32.5s	95.9%	1.3 GB
+19	FASTP (NA12813)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-fastp-1.3.7--075357a9d5c82494.img	10920403	46.9s	94.4%	1.1 GB
+23	MARKDUPLICATES (NA12878)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920481	32.5s	140.6%	12.9 GB
+21	FASTP (NA12873)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-fastp-1.3.7--075357a9d5c82494.img	10920405	34.6s	94.3%	1.1 GB
+17	BWA_MEM (NA12892)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-bwa_samtools-22527ddb3cc80fb3.img	10920437	1m 15s	377.9%	6 GB
+22	BWA_MEM (NA07357)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-bwa_samtools-22527ddb3cc80fb3.img	10920435	2m 27s	386.5%	6.5 GB
+30	MARKDUPLICATES (NA07357)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920482	30.3s	145.2%	11.9 GB
+27	BWA_MEM (NA12003)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-bwa_samtools-22527ddb3cc80fb3.img	10920438	1m 21s	380.5%	6 GB
+28	MARKDUPLICATES (NA12892)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920480	23.1s	130.2%	11.5 GB
+24	BWA_MEM (NA10851)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-bwa_samtools-22527ddb3cc80fb3.img	10920439	2m 40s	386.0%	6.6 GB
+32	MARKDUPLICATES (NA12003)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920479	23.8s	132.1%	11.9 GB
+29	BWA_MEM (NA12813)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-bwa_samtools-22527ddb3cc80fb3.img	10920441	5m 55s	337.3%	7.2 GB
+34	MARKDUPLICATES (NA10851)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920484	28.2s	147.4%	11.9 GB
+33	BWA_MEM (NA12873)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-bwa_samtools-22527ddb3cc80fb3.img	10920440	3m 25s	386.8%	6.8 GB
+36	MARKDUPLICATES (NA12873)	CACHED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920485	32.4s	145.4%	12.7 GB
+35	MARKDUPLICATES (NA12813)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920964	43.8s	142.5%	14.5 GB
+42	MULTIQC (cohort)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/quay.io-biocontainers-multiqc-1.35--pyhdfd78af_2.img	10921025	10s	39.0%	206.1 MB
+37	HAPLOTYPECALLER (NA12892)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920968	3m 33s	161.5%	2.4 GB
+38	HAPLOTYPECALLER (NA12003)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920970	3m 37s	159.7%	2.4 GB
+26	HAPLOTYPECALLER (NA12878)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920966	4m 59s	154.3%	2.4 GB
+31	HAPLOTYPECALLER (NA07357)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920967	4m 43s	155.6%	2.4 GB
+39	HAPLOTYPECALLER (NA10851)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920969	4m 43s	156.9%	2 GB
+25	HAPLOTYPECALLER (NA12891)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920965	5m 24s	156.4%	1.7 GB
+40	HAPLOTYPECALLER (NA12873)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920971	5m 46s	154.4%	1.7 GB
+41	HAPLOTYPECALLER (NA12813)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10920988	7m 6s	153.5%	1.1 GB
+43	JOINT_GENOTYPE (cohort)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10921114	7m 24s	102.9%	2 GB
+44	FILTER (cohort)	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-gatk4_samtools_bcftools-1adede7d418fb46b.img	10921191	6.6s	141.2%	364.1 MB
+45	PUBLISH	COMPLETED	0	/scratch/kasemire.d/nxf-apptainer/community.wave.seqera.io-library-coreutils_gawk_gzip-7c58ccc2f9ca6bcc.img	10921238	369ms	30.6%	3.4 MB
