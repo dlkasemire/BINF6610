@@ -15,3 +15,10 @@ out/
 *.vcf.gz.tbi
 !smoke-run/cohort.filtered.vcf.gz
 slurm/logs/
+
+# Nextflow's working files, and results/ (its copies are committed instead)
+work/
+.nextflow/
+.nextflow.log*
+results/
+nf-head-*.out

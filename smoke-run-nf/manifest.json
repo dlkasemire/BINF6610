@@ -1,0 +1,46 @@
+{
+  "pipeline": {
+    "name": "variant-call",
+    "version": "1.0.0",
+    "implementation": "nextflow",
+    "revision": "none",
+    "git_sha": "none",
+    "run_id": "grave_franklin",
+    "started_at": "2026-10-08T07:13:22.482671-04:00",
+    "launch_dir": "/Users/lindadk/Documents/Scientific_computing/binf6610",
+    "finished_at": "2026-10-08T11:15:22Z",
+    "exit_status": "success"
+  },
+  "params": {
+    "samplesheet": "/Users/lindadk/Documents/scientific_computing/smoke/samplesheet.csv",
+    "ref": "/Users/lindadk/Documents/scientific_computing/smoke/smoke.fa",
+    "region": "smoke_1mb",
+    "outdir": "results",
+    "platform": "docker-local"
+  },
+  "platform": {
+    "kind": "docker-local",
+    "executor": "local",
+    "engine": "nextflow 26.04.6",
+    "containers": {
+      "tools": "community.wave.seqera.io/library/coreutils_gawk_gzip:7c58ccc2f9ca6bcc",
+      "fastqc": "quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0",
+      "fastp": "community.wave.seqera.io/library/fastp:1.3.7--075357a9d5c82494",
+      "bwa": "community.wave.seqera.io/library/bwa_samtools:22527ddb3cc80fb3",
+      "gatk": "community.wave.seqera.io/library/gatk4_samtools_bcftools:1adede7d418fb46b",
+      "multiqc": "quay.io/biocontainers/multiqc:1.35--pyhdfd78af_2"
+    }
+  },
+  "samples": [
+    {"sample_id": "smoke_01", "library_type": "paired", "condition": "unaffected"},
+    {"sample_id": "smoke_02", "library_type": "paired", "condition": "affected"},
+    {"sample_id": "smoke_03", "library_type": "single", "condition": "affected"}
+  ],
+  "outputs": [
+    {"path": "cohort.filtered.vcf.gz", "checksum": "sha256:3cc06d645241ed4fe621a2ad979fe296a039b4d50b4ec15d74babddd16b05921"},
+    {"path": "cohort.filtered.vcf.gz.tbi", "checksum": "sha256:8d86efa98cadd490d1870eab8f4e77c077b86d4ebea9fa7acde412b171a63408"},
+    {"path": "multiqc_report.html", "checksum": "sha256:ea59ca6448a4b8c2f459a12bcfa8a5b1b1c4c058f92456c139f1b2c04c389d36"},
+    {"path": "samples.tsv", "checksum": "sha256:d534edf8132cce4c541af0eea6cc345b17613e1b4a7a5286742aa8d16395257c"},
+    {"path": "variants.tsv", "checksum": "sha256:fa075326455bdce3c7b91e3e377815c7590bcdb501310bab17a47d2f54d492fb"}
+  ]
+}

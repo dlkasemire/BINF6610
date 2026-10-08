@@ -1,0 +1,21 @@
+task_id	name	status	exit	container	native_id	realtime	%cpu	peak_rss
+1	VALIDATE (samplesheet)	COMPLETED	0	community.wave.seqera.io/library/coreutils_gawk_gzip:7c58ccc2f9ca6bcc	4070	1.9s	109.4%	13.3 MB
+3	FASTP (smoke_01)	COMPLETED	0	community.wave.seqera.io/library/fastp:1.3.7--075357a9d5c82494	4164	4.2s	98.8%	1.1 GB
+6	FASTP (smoke_02)	COMPLETED	0	community.wave.seqera.io/library/fastp:1.3.7--075357a9d5c82494	4158	4.4s	95.7%	1.1 GB
+7	FASTP (smoke_03)	COMPLETED	0	community.wave.seqera.io/library/fastp:1.3.7--075357a9d5c82494	4177	11.6s	88.4%	76.3 MB
+5	FASTQC (smoke_03)	COMPLETED	0	quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0	4139	14s	81.6%	293.5 MB
+10	BWA_MEM (smoke_03)	COMPLETED	0	community.wave.seqera.io/library/bwa_samtools:22527ddb3cc80fb3	4339	6.6s	91.1%	57.8 MB
+2	FASTQC (smoke_01)	COMPLETED	0	quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0	4137	22s	96.4%	344.4 MB
+4	FASTQC (smoke_02)	COMPLETED	0	quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0	4125	23s	87.1%	253.7 MB
+9	BWA_MEM (smoke_02)	COMPLETED	0	community.wave.seqera.io/library/bwa_samtools:22527ddb3cc80fb3	4272	19s	94.5%	169.4 MB
+8	BWA_MEM (smoke_01)	COMPLETED	0	community.wave.seqera.io/library/bwa_samtools:22527ddb3cc80fb3	4259	19.4s	91.4%	169.4 MB
+11	MARKDUPLICATES (smoke_03)	COMPLETED	0	community.wave.seqera.io/library/gatk4_samtools_bcftools:1adede7d418fb46b	4392	6.5s	176.9%	532.4 MB
+12	MARKDUPLICATES (smoke_02)	COMPLETED	0	community.wave.seqera.io/library/gatk4_samtools_bcftools:1adede7d418fb46b	4433	7.6s	167.2%	651.1 MB
+13	MARKDUPLICATES (smoke_01)	COMPLETED	0	community.wave.seqera.io/library/gatk4_samtools_bcftools:1adede7d418fb46b	4458	8.2s	176.6%	666.7 MB
+17	MULTIQC (cohort)	COMPLETED	0	quay.io/biocontainers/multiqc:1.35--pyhdfd78af_2	4573	9.3s	64.5%	298.7 MB
+14	HAPLOTYPECALLER (smoke_03)	COMPLETED	0	community.wave.seqera.io/library/gatk4_samtools_bcftools:1adede7d418fb46b	4483	32.6s	159.8%	578.2 MB
+15	HAPLOTYPECALLER (smoke_02)	COMPLETED	0	community.wave.seqera.io/library/gatk4_samtools_bcftools:1adede7d418fb46b	4525	41.8s	154.3%	506.6 MB
+16	HAPLOTYPECALLER (smoke_01)	COMPLETED	0	community.wave.seqera.io/library/gatk4_samtools_bcftools:1adede7d418fb46b	4568	43s	149.7%	542.9 MB
+18	JOINT_GENOTYPE (cohort)	COMPLETED	0	community.wave.seqera.io/library/gatk4_samtools_bcftools:1adede7d418fb46b	4691	26s	151.1%	886.8 MB
+19	FILTER (cohort)	COMPLETED	0	community.wave.seqera.io/library/gatk4_samtools_bcftools:1adede7d418fb46b	4744	3.8s	219.5%	372.7 MB
+20	PUBLISH	COMPLETED	0	community.wave.seqera.io/library/coreutils_gawk_gzip:7c58ccc2f9ca6bcc	4788	546ms	117.8%	6.6 MB
