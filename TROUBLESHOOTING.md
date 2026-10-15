@@ -100,3 +100,55 @@ would have been ambiguous too.
 **Fix.** Put the constraints back (`git restore Snakefile`):
 `sample=one_of(PAIRED)` on `fastp_paired`, `sample=one_of(SINGLE)` on `fastp_single`.
 Each sample name now matches exactly one rule.
+
+## 4 · The first Explorer run without Apptainer
+
+**Command.** On Explorer only, I deleted `software-deployment-method: apptainer` from
+`profiles/explorer/profile.yaml` (`sed -i '/software-deployment-method: apptainer/d' ...`)
+and submitted the head job: `sbatch slurm/snakemake.sbatch`, job 11102529.
+
+(Before that, job 11102364 printed `Nothing to be done (all requested files are present
+and up to date).` I had not yet removed last week's Nextflow `results/`, which holds the
+five files `rule all` asks for, so Snakemake saw nothing to make. `rm -rf results`, then
+I submitted again.)
+
+**Which rule failed.** `validate` ran and finished: it uses only bash, awk and gzip,
+which every compute node has. Then the per-sample jobs started, and `fastqc` (NA12813,
+Slurm job 11102617) and `fastp_single` (NA12892 and NA12003, jobs 11102619 and 11102618)
+failed. The head job's log says only that a Slurm job failed:
+
+    Error in rule fastqc:
+        message: SLURM-job '11102617' failed, SLURM status is: 'FAILED'. Reason: Unknown.
+        log: logs/fastqc/NA12813.log, .snakemake/slurm_logs/rule_fastqc/NA12813/11102617.log
+    ...
+    WorkflowError:
+    At least one job did not complete successfully.
+
+**The exit status.** In that job's own Slurm log,
+`.snakemake/slurm_logs/rule_fastqc/NA12813/11102617.log`, line 76:
+
+    Command 'set -euo pipefail; (mkdir -p work/fastqc/NA12813 && fastqc -q -o ...) > logs/fastqc/NA12813.log 2>&1'
+    returned non-zero exit status 127.
+
+127 is the shell's "command not found". `sacct -j 11102617` shows `FAILED 1:0`: inside
+the Slurm job, Snakemake ran the command, saw 127, and then exited with 1 itself.
+
+**What the rule's own log says.** `logs/fastqc/NA12813.log`:
+
+    /usr/bin/bash: line 1: fastqc: command not found
+
+Without `software-deployment-method: apptainer`, Snakemake ignores every rule's
+`container:` and runs the command straight on the compute node, where only the
+`binf6610-workflows` environment (Snakemake itself) is loaded. FastQC and fastp are
+only in the images.
+
+**Fix.** `git restore profiles/explorer/profile.yaml` puts the line back, then the same
+head job again: `sbatch slurm/snakemake.sbatch`, job 11103070.
+
+**Did validate run again?** Yes. Before resubmitting, `snakemake --profile profiles/explorer -n`
+listed `rule validate` with:
+
+    reason: Software environment definition has changed since last execution
+
+Snakemake records how each job ran. `validate` had run without its image, the profile
+now runs it in the `tools` image, so its finished output is not reused.
