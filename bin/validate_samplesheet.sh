@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# validate_samplesheet.sh — stage 0, inside the VALIDATE task.
+# validate_samplesheet.sh — stage 0, run by the validate rule.
 # usage: validate_samplesheet.sh <samplesheet.csv> <reference.fa>
 #
-# Week 1's checks, with one change: Nextflow links every FASTQ and every
-# reference file into this task's folder, so each file is opened by its
-# file name, $(basename "$r1"), not by the path the samplesheet gives.
+# Week 1's checks, with one change for Snakemake: nothing is linked into a
+# task folder, so each FASTQ is opened at the path the samplesheet gives:
+# absolute, or relative to the samplesheet's folder.
 # Every problem is reported before it fails, once, at the end.
 set -euo pipefail
 
@@ -12,6 +12,14 @@ sheet=$1
 ref=$2
 problems=0
 log() { printf '[validate] %s\n' "$*" >&2; }
+# a path from the samplesheet: absolute, or relative to the samplesheet's folder
+at() {
+    if [[ "$1" == /* ]]; then
+        printf '%s' "$1"
+    else
+        printf '%s/%s' "$(dirname "$sheet")" "$1"
+    fi
+}
 
 [[ -s "$sheet" ]] || { log "samplesheet not found: $sheet"; exit 1; }
 
@@ -38,9 +46,9 @@ while IFS=, read -r id lt r1 r2; do
         log "$id: r2_fastq is filled in but library_type says single"; problems=$(( problems + 1 ))
     fi
 
-    # the files, by their names in this folder
-    f1=$(basename "$r1")
-    f2=""; [[ -z "$r2" ]] || f2=$(basename "$r2")
+    # the files, at the path the samplesheet gives
+    f1=$(at "$r1")
+    f2=""; [[ -z "$r2" ]] || f2=$(at "$r2")
 
     r1_ok=0
     if [[ ! -s "$f1" ]]; then

@@ -22,3 +22,12 @@ work/
 .nextflow.log*
 results/
 nf-head-*.out
+
+# week 5: Snakemake
+.snakemake/
+work/
+logs/
+results/
+slurm/*.out
+.DS_Store
+.Rhistory
