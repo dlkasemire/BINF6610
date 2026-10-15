@@ -1,0 +1,3 @@
+be27b3345872d7a1265fdae431585432edaccd1d64130aa54a8353931a91c0a4  -
+da27388e05e366830f40b6bb44bf1273f9418cb86ccd5eb42e11041d4a9d8e64  -
+They differ because bwa mem ran with -t 8 this week and -t 4 in week 4: bwa reads in batches sized by the thread count, so a few read pairs align differently. Both runs have the same 36853 records at the same positions with the same REF and ALT, the same sample order, and only 23 records differ, in QUAL or FILTER.

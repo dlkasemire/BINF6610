@@ -1,0 +1,25 @@
+Using profile profiles/explorer for setting default command line arguments.
+Config file config.yaml is extended by additional config specified via the command line.
+
+SNAKEMAKE
+=========
+  Date: 2026-10-15 13:19:45
+  Workflow ID: 7f534ee4-4242-4a82-98aa-61f8c9b8f1f1
+  Platform: Linux-5.14.0-362.13.1.el9_3.x86_64-x86_64-with-glibc2.34
+  Host: c0584
+  User: kasemire.d
+  Snakemake version: 9.27.0
+  Python version: 3.12.14 (main, Sep  2 2026, 23:27:36) [GCC 15.3.0]
+  Command: /courses/BINF6610.202710/shared/env/binf6610-workflows/bin/snakemake --profile profiles/explorer --config samplesheet=/courses/BINF6610.202710/data/samplesheet-variant8.csv ref=/courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa region=chr20:1-10000000 outdir=results
+  Snakefile: /home/kasemire.d/BINF6610/Snakefile
+  Base directory: /home/kasemire.d/BINF6610
+  Run directory: /home/kasemire.d/BINF6610
+  Working directory: /home/kasemire.d/BINF6610
+  Config file(s): [PosixPath('/home/kasemire.d/BINF6610/profiles/explorer/platform.yaml'), 'config.yaml']
+  Config MD5: 7ca8633d42ad3571369e4c12e7b79180
+
+Building DAG of jobs...
+LockException:
+Error: Directory cannot be locked. Please make sure that no other Snakemake process is trying to create the same files in the following directory:
+/home/kasemire.d/BINF6610
+If you are sure that no other instances of snakemake are running on this directory, the remaining lock was likely caused by a kill signal or a power loss. It can be removed with the --unlock argument.

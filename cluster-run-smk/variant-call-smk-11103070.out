@@ -1,0 +1,811 @@
+Using profile profiles/explorer for setting default command line arguments.
+Config file config.yaml is extended by additional config specified via the command line.
+
+SNAKEMAKE
+=========
+  Date: 2026-10-15 10:39:41
+  Workflow ID: 82a162a1-667b-4173-bf53-f47dfdf81f45
+  Platform: Linux-5.14.0-362.13.1.el9_3.x86_64-x86_64-with-glibc2.34
+  Host: c0584
+  User: kasemire.d
+  Snakemake version: 9.27.0
+  Python version: 3.12.14 (main, Sep  2 2026, 23:27:36) [GCC 15.3.0]
+  Command: /courses/BINF6610.202710/shared/env/binf6610-workflows/bin/snakemake --profile profiles/explorer --config samplesheet=/courses/BINF6610.202710/data/samplesheet-variant8.csv ref=/courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa region=chr20:1-10000000 outdir=results
+  Snakefile: /home/kasemire.d/BINF6610/Snakefile
+  Base directory: /home/kasemire.d/BINF6610
+  Run directory: /home/kasemire.d/BINF6610
+  Working directory: /home/kasemire.d/BINF6610
+  Config file(s): [PosixPath('/home/kasemire.d/BINF6610/profiles/explorer/platform.yaml'), 'config.yaml']
+  Config MD5: 7ca8633d42ad3571369e4c12e7b79180
+
+Building DAG of jobs...
+You are running snakemake in a SLURM job context. This is not recommended, as it may lead to unexpected behavior. If possible, please run Snakemake directly on the login node.
+SLURM run ID: 529a4880-8fd8-4903-86fc-4a1d301a3ab3
+MinJobAge 300s (>= 120s). 'squeue' should work reliably for status queries.
+Using shell: /usr/bin/bash
+Provided remote nodes: 20
+Job stats:
+job                count
+---------------  -------
+validate               1
+fastp_paired           6
+fastp_single           2
+fastqc                 8
+bwa_mem                8
+markduplicates         8
+haplotypecaller        8
+multiqc                1
+joint_genotype         1
+filter                 1
+publish                1
+all                    1
+total                 46
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:39:46 2026]
+rule validate:
+    input: /courses/BINF6610.202710/data/samplesheet-variant8.csv, /courses/BINF6610.202710/data/fastq-variant/NA12878_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12878_R2.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12891_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12891_R2.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12892_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA07357_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA07357_R2.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12003_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA10851_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA10851_R2.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12813_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12813_R2.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12873_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12873_R2.fastq.gz, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.amb, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.ann, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.bwt, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.pac, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.sa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/validate/samplesheet.csv
+    log: logs/validate.log
+    jobid: 7
+    reason: Software environment definition has changed since last execution
+    resources: tmpdir=<TBD>, disk_mb=19601, disk=19.6 GB, disk_mib=18693, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (/home/kasemire.d/BINF6610/bin/validate_samplesheet.sh /courses/BINF6610.202710/data/samplesheet-variant8.csv /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa && cp /courses/BINF6610.202710/data/samplesheet-variant8.csv work/validate/samplesheet.csv) 2> logs/validate.log
+Job 7 has been submitted with SLURM jobid 11103072 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_validate/11103072.log).
+[Thu Oct 15 10:42:16 2026]
+Finished jobid: 7 (Rule: validate)
+1 of 46 steps (2%) done
+Select jobs to execute...
+Execute 16 jobs...
+
+[Thu Oct 15 10:42:17 2026]
+rule fastp_paired:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12878_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12878_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/trim/NA12878_R1.trim.fastq.gz, work/trim/NA12878_R2.trim.fastq.gz, work/trim/NA12878.fastp.json, work/trim/NA12878.fastp.html
+    log: logs/fastp/NA12878.log
+    jobid: 6
+    reason: Missing output files: work/trim/NA12878_R1.trim.fastq.gz, work/trim/NA12878_R2.trim.fastq.gz, work/trim/NA12878.fastp.json; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12878
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (fastp -i /courses/BINF6610.202710/data/fastq-variant/NA12878_R1.fastq.gz -I /courses/BINF6610.202710/data/fastq-variant/NA12878_R2.fastq.gz -o work/trim/NA12878_R1.trim.fastq.gz -O work/trim/NA12878_R2.trim.fastq.gz -j work/trim/NA12878.fastp.json -h work/trim/NA12878.fastp.html && n=$(gzip -dc work/trim/NA12878_R1.trim.fastq.gz | wc -l) && [ $n -gt 0 ]) 2> logs/fastp/NA12878.log
+
+[Thu Oct 15 10:42:17 2026]
+rule fastp_paired:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12873_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12873_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/trim/NA12873_R1.trim.fastq.gz, work/trim/NA12873_R2.trim.fastq.gz, work/trim/NA12873.fastp.json, work/trim/NA12873.fastp.html
+    log: logs/fastp/NA12873.log
+    jobid: 35
+    reason: Missing output files: work/trim/NA12873_R1.trim.fastq.gz, work/trim/NA12873.fastp.json, work/trim/NA12873_R2.trim.fastq.gz; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12873
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (fastp -i /courses/BINF6610.202710/data/fastq-variant/NA12873_R1.fastq.gz -I /courses/BINF6610.202710/data/fastq-variant/NA12873_R2.fastq.gz -o work/trim/NA12873_R1.trim.fastq.gz -O work/trim/NA12873_R2.trim.fastq.gz -j work/trim/NA12873.fastp.json -h work/trim/NA12873.fastp.html && n=$(gzip -dc work/trim/NA12873_R1.trim.fastq.gz | wc -l) && [ $n -gt 0 ]) 2> logs/fastp/NA12873.log
+
+[Thu Oct 15 10:42:17 2026]
+rule fastp_paired:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12813_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12813_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/trim/NA12813_R1.trim.fastq.gz, work/trim/NA12813_R2.trim.fastq.gz, work/trim/NA12813.fastp.json, work/trim/NA12813.fastp.html
+    log: logs/fastp/NA12813.log
+    jobid: 31
+    reason: Missing output files: work/trim/NA12813_R2.trim.fastq.gz, work/trim/NA12813.fastp.json, work/trim/NA12813_R1.trim.fastq.gz; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12813
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (fastp -i /courses/BINF6610.202710/data/fastq-variant/NA12813_R1.fastq.gz -I /courses/BINF6610.202710/data/fastq-variant/NA12813_R2.fastq.gz -o work/trim/NA12813_R1.trim.fastq.gz -O work/trim/NA12813_R2.trim.fastq.gz -j work/trim/NA12813.fastp.json -h work/trim/NA12813.fastp.html && n=$(gzip -dc work/trim/NA12813_R1.trim.fastq.gz | wc -l) && [ $n -gt 0 ]) 2> logs/fastp/NA12813.log
+
+[Thu Oct 15 10:42:17 2026]
+rule fastp_paired:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA10851_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA10851_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/trim/NA10851_R1.trim.fastq.gz, work/trim/NA10851_R2.trim.fastq.gz, work/trim/NA10851.fastp.json, work/trim/NA10851.fastp.html
+    log: logs/fastp/NA10851.log
+    jobid: 27
+    reason: Missing output files: work/trim/NA10851_R1.trim.fastq.gz, work/trim/NA10851.fastp.json, work/trim/NA10851_R2.trim.fastq.gz; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA10851
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (fastp -i /courses/BINF6610.202710/data/fastq-variant/NA10851_R1.fastq.gz -I /courses/BINF6610.202710/data/fastq-variant/NA10851_R2.fastq.gz -o work/trim/NA10851_R1.trim.fastq.gz -O work/trim/NA10851_R2.trim.fastq.gz -j work/trim/NA10851.fastp.json -h work/trim/NA10851.fastp.html && n=$(gzip -dc work/trim/NA10851_R1.trim.fastq.gz | wc -l) && [ $n -gt 0 ]) 2> logs/fastp/NA10851.log
+
+[Thu Oct 15 10:42:17 2026]
+rule fastp_paired:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12891_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12891_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/trim/NA12891_R1.trim.fastq.gz, work/trim/NA12891_R2.trim.fastq.gz, work/trim/NA12891.fastp.json, work/trim/NA12891.fastp.html
+    log: logs/fastp/NA12891.log
+    jobid: 11
+    reason: Missing output files: work/trim/NA12891_R2.trim.fastq.gz, work/trim/NA12891_R1.trim.fastq.gz, work/trim/NA12891.fastp.json; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12891
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (fastp -i /courses/BINF6610.202710/data/fastq-variant/NA12891_R1.fastq.gz -I /courses/BINF6610.202710/data/fastq-variant/NA12891_R2.fastq.gz -o work/trim/NA12891_R1.trim.fastq.gz -O work/trim/NA12891_R2.trim.fastq.gz -j work/trim/NA12891.fastp.json -h work/trim/NA12891.fastp.html && n=$(gzip -dc work/trim/NA12891_R1.trim.fastq.gz | wc -l) && [ $n -gt 0 ]) 2> logs/fastp/NA12891.log
+
+[Thu Oct 15 10:42:17 2026]
+rule fastp_paired:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA07357_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA07357_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/trim/NA07357_R1.trim.fastq.gz, work/trim/NA07357_R2.trim.fastq.gz, work/trim/NA07357.fastp.json, work/trim/NA07357.fastp.html
+    log: logs/fastp/NA07357.log
+    jobid: 19
+    reason: Missing output files: work/trim/NA07357_R1.trim.fastq.gz, work/trim/NA07357_R2.trim.fastq.gz, work/trim/NA07357.fastp.json; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA07357
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (fastp -i /courses/BINF6610.202710/data/fastq-variant/NA07357_R1.fastq.gz -I /courses/BINF6610.202710/data/fastq-variant/NA07357_R2.fastq.gz -o work/trim/NA07357_R1.trim.fastq.gz -O work/trim/NA07357_R2.trim.fastq.gz -j work/trim/NA07357.fastp.json -h work/trim/NA07357.fastp.html && n=$(gzip -dc work/trim/NA07357_R1.trim.fastq.gz | wc -l) && [ $n -gt 0 ]) 2> logs/fastp/NA07357.log
+
+[Thu Oct 15 10:42:17 2026]
+rule fastqc:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12891_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12891_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/fastqc/NA12891
+    log: logs/fastqc/NA12891.log
+    jobid: 38
+    reason: Missing output files: work/fastqc/NA12891; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12891
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (mkdir -p work/fastqc/NA12891 && fastqc -q -o work/fastqc/NA12891 /courses/BINF6610.202710/data/fastq-variant/NA12891_R1.fastq.gz /courses/BINF6610.202710/data/fastq-variant/NA12891_R2.fastq.gz) > logs/fastqc/NA12891.log 2>&1
+
+[Thu Oct 15 10:42:17 2026]
+rule fastqc:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA07357_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA07357_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/fastqc/NA07357
+    log: logs/fastqc/NA07357.log
+    jobid: 40
+    reason: Missing output files: work/fastqc/NA07357; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA07357
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (mkdir -p work/fastqc/NA07357 && fastqc -q -o work/fastqc/NA07357 /courses/BINF6610.202710/data/fastq-variant/NA07357_R1.fastq.gz /courses/BINF6610.202710/data/fastq-variant/NA07357_R2.fastq.gz) > logs/fastqc/NA07357.log 2>&1
+
+[Thu Oct 15 10:42:17 2026]
+rule fastqc:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA10851_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA10851_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/fastqc/NA10851
+    log: logs/fastqc/NA10851.log
+    jobid: 42
+    reason: Missing output files: work/fastqc/NA10851; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA10851
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (mkdir -p work/fastqc/NA10851 && fastqc -q -o work/fastqc/NA10851 /courses/BINF6610.202710/data/fastq-variant/NA10851_R1.fastq.gz /courses/BINF6610.202710/data/fastq-variant/NA10851_R2.fastq.gz) > logs/fastqc/NA10851.log 2>&1
+
+[Thu Oct 15 10:42:17 2026]
+rule fastqc:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12878_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12878_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/fastqc/NA12878
+    log: logs/fastqc/NA12878.log
+    jobid: 37
+    reason: Missing output files: work/fastqc/NA12878; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12878
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (mkdir -p work/fastqc/NA12878 && fastqc -q -o work/fastqc/NA12878 /courses/BINF6610.202710/data/fastq-variant/NA12878_R1.fastq.gz /courses/BINF6610.202710/data/fastq-variant/NA12878_R2.fastq.gz) > logs/fastqc/NA12878.log 2>&1
+
+[Thu Oct 15 10:42:17 2026]
+rule fastqc:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12873_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12873_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/fastqc/NA12873
+    log: logs/fastqc/NA12873.log
+    jobid: 44
+    reason: Missing output files: work/fastqc/NA12873; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12873
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (mkdir -p work/fastqc/NA12873 && fastqc -q -o work/fastqc/NA12873 /courses/BINF6610.202710/data/fastq-variant/NA12873_R1.fastq.gz /courses/BINF6610.202710/data/fastq-variant/NA12873_R2.fastq.gz) > logs/fastqc/NA12873.log 2>&1
+
+[Thu Oct 15 10:42:17 2026]
+rule fastqc:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12003_R1.fastq.gz, work/validate/samplesheet.csv
+    output: work/fastqc/NA12003
+    log: logs/fastqc/NA12003.log
+    jobid: 41
+    reason: Missing output files: work/fastqc/NA12003; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12003
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (mkdir -p work/fastqc/NA12003 && fastqc -q -o work/fastqc/NA12003 /courses/BINF6610.202710/data/fastq-variant/NA12003_R1.fastq.gz) > logs/fastqc/NA12003.log 2>&1
+
+[Thu Oct 15 10:42:17 2026]
+rule fastqc:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12892_R1.fastq.gz, work/validate/samplesheet.csv
+    output: work/fastqc/NA12892
+    log: logs/fastqc/NA12892.log
+    jobid: 39
+    reason: Missing output files: work/fastqc/NA12892; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12892
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (mkdir -p work/fastqc/NA12892 && fastqc -q -o work/fastqc/NA12892 /courses/BINF6610.202710/data/fastq-variant/NA12892_R1.fastq.gz) > logs/fastqc/NA12892.log 2>&1
+
+[Thu Oct 15 10:42:17 2026]
+rule fastqc:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12813_R1.fastq.gz, /courses/BINF6610.202710/data/fastq-variant/NA12813_R2.fastq.gz, work/validate/samplesheet.csv
+    output: work/fastqc/NA12813
+    log: logs/fastqc/NA12813.log
+    jobid: 43
+    reason: Missing output files: work/fastqc/NA12813; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12813
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (mkdir -p work/fastqc/NA12813 && fastqc -q -o work/fastqc/NA12813 /courses/BINF6610.202710/data/fastq-variant/NA12813_R1.fastq.gz /courses/BINF6610.202710/data/fastq-variant/NA12813_R2.fastq.gz) > logs/fastqc/NA12813.log 2>&1
+
+[Thu Oct 15 10:42:17 2026]
+rule fastp_single:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12003_R1.fastq.gz, work/validate/samplesheet.csv
+    output: work/trim/NA12003_R1.trim.fastq.gz, work/trim/NA12003.fastp.json, work/trim/NA12003.fastp.html
+    log: logs/fastp/NA12003.log
+    jobid: 23
+    reason: Missing output files: work/trim/NA12003_R1.trim.fastq.gz, work/trim/NA12003.fastp.json; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12003
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (fastp -i /courses/BINF6610.202710/data/fastq-variant/NA12003_R1.fastq.gz -o work/trim/NA12003_R1.trim.fastq.gz -j work/trim/NA12003.fastp.json -h work/trim/NA12003.fastp.html && n=$(gzip -dc work/trim/NA12003_R1.trim.fastq.gz | wc -l) && [ $n -gt 0 ]) 2> logs/fastp/NA12003.log
+
+[Thu Oct 15 10:42:17 2026]
+rule fastp_single:
+    input: /courses/BINF6610.202710/data/fastq-variant/NA12892_R1.fastq.gz, work/validate/samplesheet.csv
+    output: work/trim/NA12892_R1.trim.fastq.gz, work/trim/NA12892.fastp.json, work/trim/NA12892.fastp.html
+    log: logs/fastp/NA12892.log
+    jobid: 15
+    reason: Missing output files: work/trim/NA12892_R1.trim.fastq.gz, work/trim/NA12892.fastp.json; Input files updated by another job: work/validate/samplesheet.csv
+    wildcards: sample=NA12892
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (fastp -i /courses/BINF6610.202710/data/fastq-variant/NA12892_R1.fastq.gz -o work/trim/NA12892_R1.trim.fastq.gz -j work/trim/NA12892.fastp.json -h work/trim/NA12892.fastp.html && n=$(gzip -dc work/trim/NA12892_R1.trim.fastq.gz | wc -l) && [ $n -gt 0 ]) 2> logs/fastp/NA12892.log
+Job 6 has been submitted with SLURM jobid 11103121 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastp_paired/NA12878/11103121.log).
+Job 35 has been submitted with SLURM jobid 11103122 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastp_paired/NA12873/11103122.log).
+Job 31 has been submitted with SLURM jobid 11103123 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastp_paired/NA12813/11103123.log).
+Job 27 has been submitted with SLURM jobid 11103124 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastp_paired/NA10851/11103124.log).
+Job 11 has been submitted with SLURM jobid 11103125 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastp_paired/NA12891/11103125.log).
+Job 19 has been submitted with SLURM jobid 11103127 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastp_paired/NA07357/11103127.log).
+Job 38 has been submitted with SLURM jobid 11103128 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastqc/NA12891/11103128.log).
+Job 40 has been submitted with SLURM jobid 11103137 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastqc/NA07357/11103137.log).
+Job 42 has been submitted with SLURM jobid 11103138 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastqc/NA10851/11103138.log).
+Job 37 has been submitted with SLURM jobid 11103139 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastqc/NA12878/11103139.log).
+Job 44 has been submitted with SLURM jobid 11103141 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastqc/NA12873/11103141.log).
+Job 41 has been submitted with SLURM jobid 11103143 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastqc/NA12003/11103143.log).
+Job 39 has been submitted with SLURM jobid 11103147 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastqc/NA12892/11103147.log).
+Job 43 has been submitted with SLURM jobid 11103148 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastqc/NA12813/11103148.log).
+Job 23 has been submitted with SLURM jobid 11103149 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastp_single/NA12003/11103149.log).
+Job 15 has been submitted with SLURM jobid 11103150 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_fastp_single/NA12892/11103150.log).
+[Thu Oct 15 10:43:49 2026]
+Finished jobid: 6 (Rule: fastp_paired)
+2 of 46 steps (4%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:43:50 2026]
+rule bwa_mem:
+    input: work/trim/NA12878_R1.trim.fastq.gz, work/trim/NA12878_R2.trim.fastq.gz, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.amb, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.ann, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.bwt, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.pac, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.sa
+    output: work/align/NA12878.bam
+    log: logs/bwa_mem/NA12878.log
+    jobid: 5
+    reason: Missing output files: work/align/NA12878.bam; Input files updated by another job: work/trim/NA12878_R1.trim.fastq.gz, work/trim/NA12878_R2.trim.fastq.gz
+    wildcards: sample=NA12878
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=17306, disk=17.31 GB, disk_mib=16505, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: 
+        (bwa mem -t 8 -R '@RG\tID:NA12878\tSM:NA12878\tLB:NA12878\tPL:ILLUMINA' /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa work/trim/NA12878_R1.trim.fastq.gz work/trim/NA12878_R2.trim.fastq.gz \
+            | samtools sort -T work/align/NA12878.sorttmp -o work/align/NA12878.bam -
+        total=$(samtools view -c work/align/NA12878.bam)
+        mapped=$(samtools view -c -F 4 work/align/NA12878.bam)
+        echo "NA12878: $mapped of $total reads aligned"
+        awk -v m=$mapped -v t=$total 'BEGIN { exit !(t > 0 && 100 * m / t > 50) }') > logs/bwa_mem/NA12878.log 2>&1
+        
+[Thu Oct 15 10:43:51 2026]
+Finished jobid: 35 (Rule: fastp_paired)
+3 of 46 steps (7%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:43:52 2026]
+rule bwa_mem:
+    input: work/trim/NA12873_R1.trim.fastq.gz, work/trim/NA12873_R2.trim.fastq.gz, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.amb, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.ann, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.bwt, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.pac, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.sa
+    output: work/align/NA12873.bam
+    log: logs/bwa_mem/NA12873.log
+    jobid: 34
+    reason: Missing output files: work/align/NA12873.bam; Input files updated by another job: work/trim/NA12873_R1.trim.fastq.gz, work/trim/NA12873_R2.trim.fastq.gz
+    wildcards: sample=NA12873
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=17399, disk=17.4 GB, disk_mib=16593, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: 
+        (bwa mem -t 8 -R '@RG\tID:NA12873\tSM:NA12873\tLB:NA12873\tPL:ILLUMINA' /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa work/trim/NA12873_R1.trim.fastq.gz work/trim/NA12873_R2.trim.fastq.gz \
+            | samtools sort -T work/align/NA12873.sorttmp -o work/align/NA12873.bam -
+        total=$(samtools view -c work/align/NA12873.bam)
+        mapped=$(samtools view -c -F 4 work/align/NA12873.bam)
+        echo "NA12873: $mapped of $total reads aligned"
+        awk -v m=$mapped -v t=$total 'BEGIN { exit !(t > 0 && 100 * m / t > 50) }') > logs/bwa_mem/NA12873.log 2>&1
+        
+Job 5 has been submitted with SLURM jobid 11103165 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_bwa_mem/NA12878/11103165.log).
+Job 34 has been submitted with SLURM jobid 11103168 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_bwa_mem/NA12873/11103168.log).
+[Thu Oct 15 10:44:31 2026]
+Finished jobid: 31 (Rule: fastp_paired)
+4 of 46 steps (9%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:44:32 2026]
+rule bwa_mem:
+    input: work/trim/NA12813_R1.trim.fastq.gz, work/trim/NA12813_R2.trim.fastq.gz, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.amb, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.ann, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.bwt, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.pac, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.sa
+    output: work/align/NA12813.bam
+    log: logs/bwa_mem/NA12813.log
+    jobid: 30
+    reason: Missing output files: work/align/NA12813.bam; Input files updated by another job: work/trim/NA12813_R2.trim.fastq.gz, work/trim/NA12813_R1.trim.fastq.gz
+    wildcards: sample=NA12813
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=17536, disk=17.54 GB, disk_mib=16724, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: 
+        (bwa mem -t 8 -R '@RG\tID:NA12813\tSM:NA12813\tLB:NA12813\tPL:ILLUMINA' /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa work/trim/NA12813_R1.trim.fastq.gz work/trim/NA12813_R2.trim.fastq.gz \
+            | samtools sort -T work/align/NA12813.sorttmp -o work/align/NA12813.bam -
+        total=$(samtools view -c work/align/NA12813.bam)
+        mapped=$(samtools view -c -F 4 work/align/NA12813.bam)
+        echo "NA12813: $mapped of $total reads aligned"
+        awk -v m=$mapped -v t=$total 'BEGIN { exit !(t > 0 && 100 * m / t > 50) }') > logs/bwa_mem/NA12813.log 2>&1
+        
+[Thu Oct 15 10:44:35 2026]
+Finished jobid: 11 (Rule: fastp_paired)
+5 of 46 steps (11%) done
+Job 30 has been submitted with SLURM jobid 11103172 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_bwa_mem/NA12813/11103172.log).
+[Thu Oct 15 10:44:37 2026]
+Finished jobid: 27 (Rule: fastp_paired)
+6 of 46 steps (13%) done
+Select jobs to execute...
+Execute 2 jobs...
+
+[Thu Oct 15 10:44:38 2026]
+rule bwa_mem:
+    input: work/trim/NA12891_R1.trim.fastq.gz, work/trim/NA12891_R2.trim.fastq.gz, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.amb, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.ann, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.bwt, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.pac, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.sa
+    output: work/align/NA12891.bam
+    log: logs/bwa_mem/NA12891.log
+    jobid: 10
+    reason: Missing output files: work/align/NA12891.bam; Input files updated by another job: work/trim/NA12891_R2.trim.fastq.gz, work/trim/NA12891_R1.trim.fastq.gz
+    wildcards: sample=NA12891
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=17322, disk=17.32 GB, disk_mib=16520, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: 
+        (bwa mem -t 8 -R '@RG\tID:NA12891\tSM:NA12891\tLB:NA12891\tPL:ILLUMINA' /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa work/trim/NA12891_R1.trim.fastq.gz work/trim/NA12891_R2.trim.fastq.gz \
+            | samtools sort -T work/align/NA12891.sorttmp -o work/align/NA12891.bam -
+        total=$(samtools view -c work/align/NA12891.bam)
+        mapped=$(samtools view -c -F 4 work/align/NA12891.bam)
+        echo "NA12891: $mapped of $total reads aligned"
+        awk -v m=$mapped -v t=$total 'BEGIN { exit !(t > 0 && 100 * m / t > 50) }') > logs/bwa_mem/NA12891.log 2>&1
+        
+
+[Thu Oct 15 10:44:38 2026]
+rule bwa_mem:
+    input: work/trim/NA10851_R1.trim.fastq.gz, work/trim/NA10851_R2.trim.fastq.gz, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.amb, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.ann, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.bwt, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.pac, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.sa
+    output: work/align/NA10851.bam
+    log: logs/bwa_mem/NA10851.log
+    jobid: 26
+    reason: Missing output files: work/align/NA10851.bam; Input files updated by another job: work/trim/NA10851_R1.trim.fastq.gz, work/trim/NA10851_R2.trim.fastq.gz
+    wildcards: sample=NA10851
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=17311, disk=17.31 GB, disk_mib=16510, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: 
+        (bwa mem -t 8 -R '@RG\tID:NA10851\tSM:NA10851\tLB:NA10851\tPL:ILLUMINA' /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa work/trim/NA10851_R1.trim.fastq.gz work/trim/NA10851_R2.trim.fastq.gz \
+            | samtools sort -T work/align/NA10851.sorttmp -o work/align/NA10851.bam -
+        total=$(samtools view -c work/align/NA10851.bam)
+        mapped=$(samtools view -c -F 4 work/align/NA10851.bam)
+        echo "NA10851: $mapped of $total reads aligned"
+        awk -v m=$mapped -v t=$total 'BEGIN { exit !(t > 0 && 100 * m / t > 50) }') > logs/bwa_mem/NA10851.log 2>&1
+        
+[Thu Oct 15 10:44:39 2026]
+Finished jobid: 38 (Rule: fastqc)
+7 of 46 steps (15%) done
+Job 10 has been submitted with SLURM jobid 11103173 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_bwa_mem/NA12891/11103173.log).
+Job 26 has been submitted with SLURM jobid 11103174 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_bwa_mem/NA10851/11103174.log).
+[Thu Oct 15 10:44:42 2026]
+Finished jobid: 19 (Rule: fastp_paired)
+8 of 46 steps (17%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:44:43 2026]
+rule bwa_mem:
+    input: work/trim/NA07357_R1.trim.fastq.gz, work/trim/NA07357_R2.trim.fastq.gz, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.amb, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.ann, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.bwt, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.pac, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.sa
+    output: work/align/NA07357.bam
+    log: logs/bwa_mem/NA07357.log
+    jobid: 18
+    reason: Missing output files: work/align/NA07357.bam; Input files updated by another job: work/trim/NA07357_R1.trim.fastq.gz, work/trim/NA07357_R2.trim.fastq.gz
+    wildcards: sample=NA07357
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=17278, disk=17.28 GB, disk_mib=16478, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: 
+        (bwa mem -t 8 -R '@RG\tID:NA07357\tSM:NA07357\tLB:NA07357\tPL:ILLUMINA' /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa work/trim/NA07357_R1.trim.fastq.gz work/trim/NA07357_R2.trim.fastq.gz \
+            | samtools sort -T work/align/NA07357.sorttmp -o work/align/NA07357.bam -
+        total=$(samtools view -c work/align/NA07357.bam)
+        mapped=$(samtools view -c -F 4 work/align/NA07357.bam)
+        echo "NA07357: $mapped of $total reads aligned"
+        awk -v m=$mapped -v t=$total 'BEGIN { exit !(t > 0 && 100 * m / t > 50) }') > logs/bwa_mem/NA07357.log 2>&1
+        
+[Thu Oct 15 10:44:44 2026]
+Finished jobid: 42 (Rule: fastqc)
+9 of 46 steps (20%) done
+[Thu Oct 15 10:44:44 2026]
+Finished jobid: 40 (Rule: fastqc)
+10 of 46 steps (22%) done
+Job 18 has been submitted with SLURM jobid 11103175 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_bwa_mem/NA07357/11103175.log).
+[Thu Oct 15 10:44:45 2026]
+Finished jobid: 37 (Rule: fastqc)
+11 of 46 steps (24%) done
+[Thu Oct 15 10:44:46 2026]
+Finished jobid: 44 (Rule: fastqc)
+12 of 46 steps (26%) done
+[Thu Oct 15 10:44:47 2026]
+Finished jobid: 41 (Rule: fastqc)
+13 of 46 steps (28%) done
+[Thu Oct 15 10:44:47 2026]
+Finished jobid: 39 (Rule: fastqc)
+14 of 46 steps (30%) done
+[Thu Oct 15 10:44:49 2026]
+Finished jobid: 23 (Rule: fastp_single)
+15 of 46 steps (33%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:44:50 2026]
+rule bwa_mem:
+    input: work/trim/NA12003_R1.trim.fastq.gz, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.amb, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.ann, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.bwt, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.pac, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.sa
+    output: work/align/NA12003.bam
+    log: logs/bwa_mem/NA12003.log
+    jobid: 22
+    reason: Missing output files: work/align/NA12003.bam; Input files updated by another job: work/trim/NA12003_R1.trim.fastq.gz
+    wildcards: sample=NA12003
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=17151, disk=17.15 GB, disk_mib=16357, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: 
+        (bwa mem -t 8 -R '@RG\tID:NA12003\tSM:NA12003\tLB:NA12003\tPL:ILLUMINA' /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa work/trim/NA12003_R1.trim.fastq.gz \
+            | samtools sort -T work/align/NA12003.sorttmp -o work/align/NA12003.bam -
+        total=$(samtools view -c work/align/NA12003.bam)
+        mapped=$(samtools view -c -F 4 work/align/NA12003.bam)
+        echo "NA12003: $mapped of $total reads aligned"
+        awk -v m=$mapped -v t=$total 'BEGIN { exit !(t > 0 && 100 * m / t > 50) }') > logs/bwa_mem/NA12003.log 2>&1
+        
+[Thu Oct 15 10:45:28 2026]
+Finished jobid: 43 (Rule: fastqc)
+16 of 46 steps (35%) done
+Job 22 has been submitted with SLURM jobid 11103198 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_bwa_mem/NA12003/11103198.log).
+[Thu Oct 15 10:46:10 2026]
+Finished jobid: 15 (Rule: fastp_single)
+17 of 46 steps (37%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:46:11 2026]
+rule bwa_mem:
+    input: work/trim/NA12892_R1.trim.fastq.gz, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.amb, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.ann, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.bwt, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.pac, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.sa
+    output: work/align/NA12892.bam
+    log: logs/bwa_mem/NA12892.log
+    jobid: 14
+    reason: Missing output files: work/align/NA12892.bam; Input files updated by another job: work/trim/NA12892_R1.trim.fastq.gz
+    wildcards: sample=NA12892
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=17136, disk=17.14 GB, disk_mib=16343, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: 
+        (bwa mem -t 8 -R '@RG\tID:NA12892\tSM:NA12892\tLB:NA12892\tPL:ILLUMINA' /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa work/trim/NA12892_R1.trim.fastq.gz \
+            | samtools sort -T work/align/NA12892.sorttmp -o work/align/NA12892.bam -
+        total=$(samtools view -c work/align/NA12892.bam)
+        mapped=$(samtools view -c -F 4 work/align/NA12892.bam)
+        echo "NA12892: $mapped of $total reads aligned"
+        awk -v m=$mapped -v t=$total 'BEGIN { exit !(t > 0 && 100 * m / t > 50) }') > logs/bwa_mem/NA12892.log 2>&1
+        
+[Thu Oct 15 10:46:11 2026]
+Finished jobid: 5 (Rule: bwa_mem)
+18 of 46 steps (39%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:46:12 2026]
+rule markduplicates:
+    input: work/align/NA12878.bam
+    output: work/dedup/NA12878.dedup.bam, work/dedup/NA12878.dedup.bam.bai, work/dedup/NA12878.markdup.txt, work/dedup/NA12878.flagstat.txt
+    log: logs/markduplicates/NA12878.log
+    jobid: 4
+    reason: Missing output files: work/dedup/NA12878.dedup.bam, work/dedup/NA12878.dedup.bam.bai, work/dedup/NA12878.flagstat.txt, work/dedup/NA12878.markdup.txt; Input files updated by another job: work/align/NA12878.bam
+    wildcards: sample=NA12878
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=8000, mem=8 GB, mem_mib=7630, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: (gatk MarkDuplicates -I work/align/NA12878.bam -O work/dedup/NA12878.dedup.bam -M work/dedup/NA12878.markdup.txt && samtools index work/dedup/NA12878.dedup.bam && samtools flagstat work/dedup/NA12878.dedup.bam > work/dedup/NA12878.flagstat.txt) > logs/markduplicates/NA12878.log 2>&1
+Job 14 has been submitted with SLURM jobid 11103202 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_bwa_mem/NA12892/11103202.log).
+Job 4 has been submitted with SLURM jobid 11103204 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_markduplicates/NA12878/11103204.log).
+[Thu Oct 15 10:46:51 2026]
+Finished jobid: 26 (Rule: bwa_mem)
+19 of 46 steps (41%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:46:52 2026]
+rule markduplicates:
+    input: work/align/NA10851.bam
+    output: work/dedup/NA10851.dedup.bam, work/dedup/NA10851.dedup.bam.bai, work/dedup/NA10851.markdup.txt, work/dedup/NA10851.flagstat.txt
+    log: logs/markduplicates/NA10851.log
+    jobid: 25
+    reason: Missing output files: work/dedup/NA10851.markdup.txt, work/dedup/NA10851.dedup.bam.bai, work/dedup/NA10851.dedup.bam, work/dedup/NA10851.flagstat.txt; Input files updated by another job: work/align/NA10851.bam
+    wildcards: sample=NA10851
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=8000, mem=8 GB, mem_mib=7630, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: (gatk MarkDuplicates -I work/align/NA10851.bam -O work/dedup/NA10851.dedup.bam -M work/dedup/NA10851.markdup.txt && samtools index work/dedup/NA10851.dedup.bam && samtools flagstat work/dedup/NA10851.dedup.bam > work/dedup/NA10851.flagstat.txt) > logs/markduplicates/NA10851.log 2>&1
+[Thu Oct 15 10:46:52 2026]
+Finished jobid: 34 (Rule: bwa_mem)
+20 of 46 steps (43%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:46:53 2026]
+rule markduplicates:
+    input: work/align/NA12873.bam
+    output: work/dedup/NA12873.dedup.bam, work/dedup/NA12873.dedup.bam.bai, work/dedup/NA12873.markdup.txt, work/dedup/NA12873.flagstat.txt
+    log: logs/markduplicates/NA12873.log
+    jobid: 33
+    reason: Missing output files: work/dedup/NA12873.flagstat.txt, work/dedup/NA12873.markdup.txt, work/dedup/NA12873.dedup.bam.bai, work/dedup/NA12873.dedup.bam; Input files updated by another job: work/align/NA12873.bam
+    wildcards: sample=NA12873
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=8000, mem=8 GB, mem_mib=7630, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: (gatk MarkDuplicates -I work/align/NA12873.bam -O work/dedup/NA12873.dedup.bam -M work/dedup/NA12873.markdup.txt && samtools index work/dedup/NA12873.dedup.bam && samtools flagstat work/dedup/NA12873.dedup.bam > work/dedup/NA12873.flagstat.txt) > logs/markduplicates/NA12873.log 2>&1
+Job 25 has been submitted with SLURM jobid 11103219 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_markduplicates/NA10851/11103219.log).
+Job 33 has been submitted with SLURM jobid 11103220 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_markduplicates/NA12873/11103220.log).
+[Thu Oct 15 10:47:33 2026]
+Finished jobid: 18 (Rule: bwa_mem)
+21 of 46 steps (46%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:47:34 2026]
+rule markduplicates:
+    input: work/align/NA07357.bam
+    output: work/dedup/NA07357.dedup.bam, work/dedup/NA07357.dedup.bam.bai, work/dedup/NA07357.markdup.txt, work/dedup/NA07357.flagstat.txt
+    log: logs/markduplicates/NA07357.log
+    jobid: 17
+    reason: Missing output files: work/dedup/NA07357.markdup.txt, work/dedup/NA07357.dedup.bam, work/dedup/NA07357.flagstat.txt, work/dedup/NA07357.dedup.bam.bai; Input files updated by another job: work/align/NA07357.bam
+    wildcards: sample=NA07357
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=8000, mem=8 GB, mem_mib=7630, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: (gatk MarkDuplicates -I work/align/NA07357.bam -O work/dedup/NA07357.dedup.bam -M work/dedup/NA07357.markdup.txt && samtools index work/dedup/NA07357.dedup.bam && samtools flagstat work/dedup/NA07357.dedup.bam > work/dedup/NA07357.flagstat.txt) > logs/markduplicates/NA07357.log 2>&1
+[Thu Oct 15 10:47:34 2026]
+Finished jobid: 22 (Rule: bwa_mem)
+22 of 46 steps (48%) done
+[Thu Oct 15 10:47:36 2026]
+Finished jobid: 14 (Rule: bwa_mem)
+23 of 46 steps (50%) done
+Select jobs to execute...
+Job 17 has been submitted with SLURM jobid 11103226 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_markduplicates/NA07357/11103226.log).
+Execute 2 jobs...
+
+[Thu Oct 15 10:47:37 2026]
+rule markduplicates:
+    input: work/align/NA12892.bam
+    output: work/dedup/NA12892.dedup.bam, work/dedup/NA12892.dedup.bam.bai, work/dedup/NA12892.markdup.txt, work/dedup/NA12892.flagstat.txt
+    log: logs/markduplicates/NA12892.log
+    jobid: 13
+    reason: Missing output files: work/dedup/NA12892.dedup.bam.bai, work/dedup/NA12892.dedup.bam, work/dedup/NA12892.markdup.txt, work/dedup/NA12892.flagstat.txt; Input files updated by another job: work/align/NA12892.bam
+    wildcards: sample=NA12892
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=8000, mem=8 GB, mem_mib=7630, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: (gatk MarkDuplicates -I work/align/NA12892.bam -O work/dedup/NA12892.dedup.bam -M work/dedup/NA12892.markdup.txt && samtools index work/dedup/NA12892.dedup.bam && samtools flagstat work/dedup/NA12892.dedup.bam > work/dedup/NA12892.flagstat.txt) > logs/markduplicates/NA12892.log 2>&1
+
+[Thu Oct 15 10:47:37 2026]
+rule markduplicates:
+    input: work/align/NA12003.bam
+    output: work/dedup/NA12003.dedup.bam, work/dedup/NA12003.dedup.bam.bai, work/dedup/NA12003.markdup.txt, work/dedup/NA12003.flagstat.txt
+    log: logs/markduplicates/NA12003.log
+    jobid: 21
+    reason: Missing output files: work/dedup/NA12003.markdup.txt, work/dedup/NA12003.flagstat.txt, work/dedup/NA12003.dedup.bam.bai, work/dedup/NA12003.dedup.bam; Input files updated by another job: work/align/NA12003.bam
+    wildcards: sample=NA12003
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=8000, mem=8 GB, mem_mib=7630, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: (gatk MarkDuplicates -I work/align/NA12003.bam -O work/dedup/NA12003.dedup.bam -M work/dedup/NA12003.markdup.txt && samtools index work/dedup/NA12003.dedup.bam && samtools flagstat work/dedup/NA12003.dedup.bam > work/dedup/NA12003.flagstat.txt) > logs/markduplicates/NA12003.log 2>&1
+Job 13 has been submitted with SLURM jobid 11103228 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_markduplicates/NA12892/11103228.log).
+[Thu Oct 15 10:47:39 2026]
+Finished jobid: 4 (Rule: markduplicates)
+24 of 46 steps (52%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:47:40 2026]
+rule haplotypecaller:
+    input: work/dedup/NA12878.dedup.bam, work/dedup/NA12878.dedup.bam.bai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/gvcf/NA12878.g.vcf.gz, work/gvcf/NA12878.g.vcf.gz.tbi
+    log: logs/haplotypecaller/NA12878.log
+    jobid: 3
+    reason: Missing output files: work/gvcf/NA12878.g.vcf.gz.tbi, work/gvcf/NA12878.g.vcf.gz; Input files updated by another job: work/dedup/NA12878.dedup.bam.bai, work/dedup/NA12878.dedup.bam
+    wildcards: sample=NA12878
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=6482, disk=6.48 GB, disk_mib=6182, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: gatk HaplotypeCaller -R /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa -I work/dedup/NA12878.dedup.bam -O work/gvcf/NA12878.g.vcf.gz -ERC GVCF -L chr20:1-10000000 --native-pair-hmm-threads 8 > logs/haplotypecaller/NA12878.log 2>&1
+Job 21 has been submitted with SLURM jobid 11103229 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_markduplicates/NA12003/11103229.log).
+Job 3 has been submitted with SLURM jobid 11103230 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_haplotypecaller/NA12878/11103230.log).
+[Thu Oct 15 10:48:18 2026]
+Finished jobid: 30 (Rule: bwa_mem)
+25 of 46 steps (54%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:48:19 2026]
+rule markduplicates:
+    input: work/align/NA12813.bam
+    output: work/dedup/NA12813.dedup.bam, work/dedup/NA12813.dedup.bam.bai, work/dedup/NA12813.markdup.txt, work/dedup/NA12813.flagstat.txt
+    log: logs/markduplicates/NA12813.log
+    jobid: 29
+    reason: Missing output files: work/dedup/NA12813.dedup.bam, work/dedup/NA12813.dedup.bam.bai, work/dedup/NA12813.flagstat.txt, work/dedup/NA12813.markdup.txt; Input files updated by another job: work/align/NA12813.bam
+    wildcards: sample=NA12813
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=8000, mem=8 GB, mem_mib=7630, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: (gatk MarkDuplicates -I work/align/NA12813.bam -O work/dedup/NA12813.dedup.bam -M work/dedup/NA12813.markdup.txt && samtools index work/dedup/NA12813.dedup.bam && samtools flagstat work/dedup/NA12813.dedup.bam > work/dedup/NA12813.flagstat.txt) > logs/markduplicates/NA12813.log 2>&1
+Job 29 has been submitted with SLURM jobid 11103243 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_markduplicates/NA12813/11103243.log).
+[Thu Oct 15 10:49:01 2026]
+Finished jobid: 25 (Rule: markduplicates)
+26 of 46 steps (57%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:49:01 2026]
+rule haplotypecaller:
+    input: work/dedup/NA10851.dedup.bam, work/dedup/NA10851.dedup.bam.bai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/gvcf/NA10851.g.vcf.gz, work/gvcf/NA10851.g.vcf.gz.tbi
+    log: logs/haplotypecaller/NA10851.log
+    jobid: 24
+    reason: Missing output files: work/gvcf/NA10851.g.vcf.gz, work/gvcf/NA10851.g.vcf.gz.tbi; Input files updated by another job: work/dedup/NA10851.dedup.bam.bai, work/dedup/NA10851.dedup.bam
+    wildcards: sample=NA10851
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=6486, disk=6.49 GB, disk_mib=6186, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: gatk HaplotypeCaller -R /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa -I work/dedup/NA10851.dedup.bam -O work/gvcf/NA10851.g.vcf.gz -ERC GVCF -L chr20:1-10000000 --native-pair-hmm-threads 8 > logs/haplotypecaller/NA10851.log 2>&1
+Job 24 has been submitted with SLURM jobid 11103251 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_haplotypecaller/NA10851/11103251.log).
+[Thu Oct 15 10:49:04 2026]
+Finished jobid: 33 (Rule: markduplicates)
+27 of 46 steps (59%) done
+[Thu Oct 15 10:49:07 2026]
+Finished jobid: 17 (Rule: markduplicates)
+28 of 46 steps (61%) done
+Select jobs to execute...
+Execute 2 jobs...
+
+[Thu Oct 15 10:49:08 2026]
+rule haplotypecaller:
+    input: work/dedup/NA12873.dedup.bam, work/dedup/NA12873.dedup.bam.bai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/gvcf/NA12873.g.vcf.gz, work/gvcf/NA12873.g.vcf.gz.tbi
+    log: logs/haplotypecaller/NA12873.log
+    jobid: 32
+    reason: Missing output files: work/gvcf/NA12873.g.vcf.gz, work/gvcf/NA12873.g.vcf.gz.tbi; Input files updated by another job: work/dedup/NA12873.dedup.bam.bai, work/dedup/NA12873.dedup.bam
+    wildcards: sample=NA12873
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=6568, disk=6.57 GB, disk_mib=6264, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: gatk HaplotypeCaller -R /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa -I work/dedup/NA12873.dedup.bam -O work/gvcf/NA12873.g.vcf.gz -ERC GVCF -L chr20:1-10000000 --native-pair-hmm-threads 8 > logs/haplotypecaller/NA12873.log 2>&1
+
+[Thu Oct 15 10:49:08 2026]
+rule haplotypecaller:
+    input: work/dedup/NA07357.dedup.bam, work/dedup/NA07357.dedup.bam.bai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/gvcf/NA07357.g.vcf.gz, work/gvcf/NA07357.g.vcf.gz.tbi
+    log: logs/haplotypecaller/NA07357.log
+    jobid: 16
+    reason: Missing output files: work/gvcf/NA07357.g.vcf.gz, work/gvcf/NA07357.g.vcf.gz.tbi; Input files updated by another job: work/dedup/NA07357.dedup.bam.bai, work/dedup/NA07357.dedup.bam
+    wildcards: sample=NA07357
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=6464, disk=6.46 GB, disk_mib=6165, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: gatk HaplotypeCaller -R /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa -I work/dedup/NA07357.dedup.bam -O work/gvcf/NA07357.g.vcf.gz -ERC GVCF -L chr20:1-10000000 --native-pair-hmm-threads 8 > logs/haplotypecaller/NA07357.log 2>&1
+Job 32 has been submitted with SLURM jobid 11103254 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_haplotypecaller/NA12873/11103254.log).
+Job 16 has been submitted with SLURM jobid 11103255 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_haplotypecaller/NA07357/11103255.log).
+[Thu Oct 15 10:54:04 2026]
+Finished jobid: 3 (Rule: haplotypecaller)
+29 of 46 steps (63%) done
+[Thu Oct 15 10:54:05 2026]
+Finished jobid: 24 (Rule: haplotypecaller)
+30 of 46 steps (65%) done
+[Thu Oct 15 10:54:07 2026]
+Finished jobid: 16 (Rule: haplotypecaller)
+31 of 46 steps (67%) done
+[Thu Oct 15 10:54:49 2026]
+Finished jobid: 13 (Rule: markduplicates)
+32 of 46 steps (70%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:54:50 2026]
+rule haplotypecaller:
+    input: work/dedup/NA12892.dedup.bam, work/dedup/NA12892.dedup.bam.bai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/gvcf/NA12892.g.vcf.gz, work/gvcf/NA12892.g.vcf.gz.tbi
+    log: logs/haplotypecaller/NA12892.log
+    jobid: 12
+    reason: Missing output files: work/gvcf/NA12892.g.vcf.gz, work/gvcf/NA12892.g.vcf.gz.tbi; Input files updated by another job: work/dedup/NA12892.dedup.bam.bai, work/dedup/NA12892.dedup.bam
+    wildcards: sample=NA12892
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=6347, disk=6.35 GB, disk_mib=6053, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: gatk HaplotypeCaller -R /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa -I work/dedup/NA12892.dedup.bam -O work/gvcf/NA12892.g.vcf.gz -ERC GVCF -L chr20:1-10000000 --native-pair-hmm-threads 8 > logs/haplotypecaller/NA12892.log 2>&1
+Job 12 has been submitted with SLURM jobid 11103358 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_haplotypecaller/NA12892/11103358.log).
+[Thu Oct 15 10:55:27 2026]
+Finished jobid: 10 (Rule: bwa_mem)
+33 of 46 steps (72%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:55:29 2026]
+rule markduplicates:
+    input: work/align/NA12891.bam
+    output: work/dedup/NA12891.dedup.bam, work/dedup/NA12891.dedup.bam.bai, work/dedup/NA12891.markdup.txt, work/dedup/NA12891.flagstat.txt
+    log: logs/markduplicates/NA12891.log
+    jobid: 9
+    reason: Missing output files: work/dedup/NA12891.flagstat.txt, work/dedup/NA12891.markdup.txt, work/dedup/NA12891.dedup.bam, work/dedup/NA12891.dedup.bam.bai; Input files updated by another job: work/align/NA12891.bam
+    wildcards: sample=NA12891
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=8000, mem=8 GB, mem_mib=7630, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: (gatk MarkDuplicates -I work/align/NA12891.bam -O work/dedup/NA12891.dedup.bam -M work/dedup/NA12891.markdup.txt && samtools index work/dedup/NA12891.dedup.bam && samtools flagstat work/dedup/NA12891.dedup.bam > work/dedup/NA12891.flagstat.txt) > logs/markduplicates/NA12891.log 2>&1
+[Thu Oct 15 10:55:30 2026]
+Finished jobid: 21 (Rule: markduplicates)
+34 of 46 steps (74%) done
+[Thu Oct 15 10:55:31 2026]
+Finished jobid: 32 (Rule: haplotypecaller)
+35 of 46 steps (76%) done
+Select jobs to execute...
+Job 9 has been submitted with SLURM jobid 11103369 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_markduplicates/NA12891/11103369.log).
+Execute 1 jobs...
+
+[Thu Oct 15 10:55:32 2026]
+rule haplotypecaller:
+    input: work/dedup/NA12003.dedup.bam, work/dedup/NA12003.dedup.bam.bai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/gvcf/NA12003.g.vcf.gz, work/gvcf/NA12003.g.vcf.gz.tbi
+    log: logs/haplotypecaller/NA12003.log
+    jobid: 20
+    reason: Missing output files: work/gvcf/NA12003.g.vcf.gz.tbi, work/gvcf/NA12003.g.vcf.gz; Input files updated by another job: work/dedup/NA12003.dedup.bam, work/dedup/NA12003.dedup.bam.bai
+    wildcards: sample=NA12003
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=6360, disk=6.36 GB, disk_mib=6066, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: gatk HaplotypeCaller -R /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa -I work/dedup/NA12003.dedup.bam -O work/gvcf/NA12003.g.vcf.gz -ERC GVCF -L chr20:1-10000000 --native-pair-hmm-threads 8 > logs/haplotypecaller/NA12003.log 2>&1
+Job 20 has been submitted with SLURM jobid 11103371 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_haplotypecaller/NA12003/11103371.log).
+[Thu Oct 15 10:56:12 2026]
+Finished jobid: 29 (Rule: markduplicates)
+36 of 46 steps (78%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 10:56:14 2026]
+rule haplotypecaller:
+    input: work/dedup/NA12813.dedup.bam, work/dedup/NA12813.dedup.bam.bai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/gvcf/NA12813.g.vcf.gz, work/gvcf/NA12813.g.vcf.gz.tbi
+    log: logs/haplotypecaller/NA12813.log
+    jobid: 28
+    reason: Missing output files: work/gvcf/NA12813.g.vcf.gz, work/gvcf/NA12813.g.vcf.gz.tbi; Input files updated by another job: work/dedup/NA12813.dedup.bam.bai, work/dedup/NA12813.dedup.bam
+    wildcards: sample=NA12813
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=6643, disk=6.64 GB, disk_mib=6336, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: gatk HaplotypeCaller -R /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa -I work/dedup/NA12813.dedup.bam -O work/gvcf/NA12813.g.vcf.gz -ERC GVCF -L chr20:1-10000000 --native-pair-hmm-threads 8 > logs/haplotypecaller/NA12813.log 2>&1
+Job 28 has been submitted with SLURM jobid 11103383 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_haplotypecaller/NA12813/11103383.log).
+[Thu Oct 15 10:58:41 2026]
+Finished jobid: 12 (Rule: haplotypecaller)
+37 of 46 steps (80%) done
+[Thu Oct 15 10:58:43 2026]
+Finished jobid: 9 (Rule: markduplicates)
+38 of 46 steps (83%) done
+Select jobs to execute...
+Execute 2 jobs...
+
+[Thu Oct 15 10:58:44 2026]
+rule multiqc:
+    input: work/fastqc/NA12878, work/fastqc/NA12891, work/fastqc/NA12892, work/fastqc/NA07357, work/fastqc/NA12003, work/fastqc/NA10851, work/fastqc/NA12813, work/fastqc/NA12873, work/trim/NA12878.fastp.json, work/trim/NA12891.fastp.json, work/trim/NA12892.fastp.json, work/trim/NA07357.fastp.json, work/trim/NA12003.fastp.json, work/trim/NA10851.fastp.json, work/trim/NA12813.fastp.json, work/trim/NA12873.fastp.json, work/dedup/NA12878.flagstat.txt, work/dedup/NA12891.flagstat.txt, work/dedup/NA12892.flagstat.txt, work/dedup/NA07357.flagstat.txt, work/dedup/NA12003.flagstat.txt, work/dedup/NA10851.flagstat.txt, work/dedup/NA12813.flagstat.txt, work/dedup/NA12873.flagstat.txt, work/dedup/NA12878.markdup.txt, work/dedup/NA12891.markdup.txt, work/dedup/NA12892.markdup.txt, work/dedup/NA07357.markdup.txt, work/dedup/NA12003.markdup.txt, work/dedup/NA10851.markdup.txt, work/dedup/NA12813.markdup.txt, work/dedup/NA12873.markdup.txt
+    output: results/multiqc_report.html
+    log: logs/multiqc.log
+    jobid: 36
+    reason: Missing output files: results/multiqc_report.html; Input files updated by another job: work/dedup/NA10851.markdup.txt, work/fastqc/NA07357, work/dedup/NA12878.flagstat.txt, work/dedup/NA12892.markdup.txt, work/dedup/NA12813.markdup.txt, work/fastqc/NA12878, work/trim/NA12813.fastp.json, work/fastqc/NA12892, work/trim/NA12873.fastp.json, work/dedup/NA12873.flagstat.txt, work/trim/NA07357.fastp.json, work/dedup/NA07357.markdup.txt, work/dedup/NA10851.flagstat.txt, work/fastqc/NA10851, work/trim/NA12003.fastp.json, work/fastqc/NA12891, work/fastqc/NA12873, work/dedup/NA12878.markdup.txt, work/dedup/NA12003.markdup.txt, work/dedup/NA12813.flagstat.txt, work/dedup/NA12891.flagstat.txt, work/dedup/NA12873.markdup.txt, work/trim/NA10851.fastp.json, work/trim/NA12891.fastp.json, work/dedup/NA12003.flagstat.txt, work/trim/NA12878.fastp.json, work/dedup/NA12891.markdup.txt, work/trim/NA12892.fastp.json, work/dedup/NA12892.flagstat.txt, work/fastqc/NA12003, work/fastqc/NA12813, work/dedup/NA07357.flagstat.txt
+    resources: tmpdir=<TBD>, disk_mb=1000, disk=1 GB, disk_mib=954, mem_mb=2000, mem=2 GB, mem_mib=1908, slurm_account=binf6610.202710, slurm_partition=courses, runtime=30
+Shell command: (multiqc -q -f -o work/multiqc work/fastqc/NA12878 work/fastqc/NA12891 work/fastqc/NA12892 work/fastqc/NA07357 work/fastqc/NA12003 work/fastqc/NA10851 work/fastqc/NA12813 work/fastqc/NA12873 work/trim/NA12878.fastp.json work/trim/NA12891.fastp.json work/trim/NA12892.fastp.json work/trim/NA07357.fastp.json work/trim/NA12003.fastp.json work/trim/NA10851.fastp.json work/trim/NA12813.fastp.json work/trim/NA12873.fastp.json work/dedup/NA12878.flagstat.txt work/dedup/NA12891.flagstat.txt work/dedup/NA12892.flagstat.txt work/dedup/NA07357.flagstat.txt work/dedup/NA12003.flagstat.txt work/dedup/NA10851.flagstat.txt work/dedup/NA12813.flagstat.txt work/dedup/NA12873.flagstat.txt work/dedup/NA12878.markdup.txt work/dedup/NA12891.markdup.txt work/dedup/NA12892.markdup.txt work/dedup/NA07357.markdup.txt work/dedup/NA12003.markdup.txt work/dedup/NA10851.markdup.txt work/dedup/NA12813.markdup.txt work/dedup/NA12873.markdup.txt && cp work/multiqc/multiqc_report.html results/multiqc_report.html) > logs/multiqc.log 2>&1
+
+[Thu Oct 15 10:58:44 2026]
+rule haplotypecaller:
+    input: work/dedup/NA12891.dedup.bam, work/dedup/NA12891.dedup.bam.bai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/gvcf/NA12891.g.vcf.gz, work/gvcf/NA12891.g.vcf.gz.tbi
+    log: logs/haplotypecaller/NA12891.log
+    jobid: 8
+    reason: Missing output files: work/gvcf/NA12891.g.vcf.gz.tbi, work/gvcf/NA12891.g.vcf.gz; Input files updated by another job: work/dedup/NA12891.dedup.bam, work/dedup/NA12891.dedup.bam.bai
+    wildcards: sample=NA12891
+    threads: 8
+    resources: tmpdir=<TBD>, disk_mb=6507, disk=6.51 GB, disk_mib=6206, mem_mb=16000, mem=16 GB, mem_mib=15259, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: gatk HaplotypeCaller -R /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa -I work/dedup/NA12891.dedup.bam -O work/gvcf/NA12891.g.vcf.gz -ERC GVCF -L chr20:1-10000000 --native-pair-hmm-threads 8 > logs/haplotypecaller/NA12891.log 2>&1
+Job 8 has been submitted with SLURM jobid 11103440 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_haplotypecaller/NA12891/11103440.log).
+Job 36 has been submitted with SLURM jobid 11103442 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_multiqc/11103442.log).
+[Thu Oct 15 11:00:12 2026]
+Finished jobid: 36 (Rule: multiqc)
+39 of 46 steps (85%) done
+[Thu Oct 15 11:01:43 2026]
+Finished jobid: 20 (Rule: haplotypecaller)
+40 of 46 steps (87%) done
+[Thu Oct 15 11:04:14 2026]
+Finished jobid: 8 (Rule: haplotypecaller)
+41 of 46 steps (89%) done
+[Thu Oct 15 11:04:54 2026]
+Finished jobid: 28 (Rule: haplotypecaller)
+42 of 46 steps (91%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Oct 15 11:04:55 2026]
+rule joint_genotype:
+    input: work/gvcf/NA12878.g.vcf.gz, work/gvcf/NA12891.g.vcf.gz, work/gvcf/NA12892.g.vcf.gz, work/gvcf/NA07357.g.vcf.gz, work/gvcf/NA12003.g.vcf.gz, work/gvcf/NA10851.g.vcf.gz, work/gvcf/NA12813.g.vcf.gz, work/gvcf/NA12873.g.vcf.gz, work/gvcf/NA12878.g.vcf.gz.tbi, work/gvcf/NA12891.g.vcf.gz.tbi, work/gvcf/NA12892.g.vcf.gz.tbi, work/gvcf/NA07357.g.vcf.gz.tbi, work/gvcf/NA12003.g.vcf.gz.tbi, work/gvcf/NA10851.g.vcf.gz.tbi, work/gvcf/NA12813.g.vcf.gz.tbi, work/gvcf/NA12873.g.vcf.gz.tbi, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa.fai, /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.dict
+    output: work/joint/cohort.vcf.gz, work/joint/cohort.vcf.gz.tbi
+    log: logs/joint_genotype.log
+    jobid: 2
+    reason: Missing output files: work/joint/cohort.vcf.gz, work/joint/cohort.vcf.gz.tbi; Input files updated by another job: work/gvcf/NA12873.g.vcf.gz, work/gvcf/NA12878.g.vcf.gz, work/gvcf/NA07357.g.vcf.gz.tbi, work/gvcf/NA12892.g.vcf.gz.tbi, work/gvcf/NA10851.g.vcf.gz.tbi, work/gvcf/NA12891.g.vcf.gz, work/gvcf/NA12813.g.vcf.gz.tbi, work/gvcf/NA07357.g.vcf.gz, work/gvcf/NA12813.g.vcf.gz, work/gvcf/NA12873.g.vcf.gz.tbi, work/gvcf/NA12003.g.vcf.gz.tbi, work/gvcf/NA12891.g.vcf.gz.tbi, work/gvcf/NA12878.g.vcf.gz.tbi, work/gvcf/NA10851.g.vcf.gz, work/gvcf/NA12892.g.vcf.gz, work/gvcf/NA12003.g.vcf.gz
+    resources: tmpdir=<TBD>, disk_mb=6544, disk=6.54 GB, disk_mib=6241, mem_mb=8000, mem=8 GB, mem_mib=7630, slurm_account=binf6610.202710, slurm_partition=courses, runtime=60
+Shell command: 
+        (rm -rf work/joint/genomicsdb
+        gatk GenomicsDBImport -V work/gvcf/NA12878.g.vcf.gz -V work/gvcf/NA12891.g.vcf.gz -V work/gvcf/NA12892.g.vcf.gz -V work/gvcf/NA07357.g.vcf.gz -V work/gvcf/NA12003.g.vcf.gz -V work/gvcf/NA10851.g.vcf.gz -V work/gvcf/NA12813.g.vcf.gz -V work/gvcf/NA12873.g.vcf.gz --genomicsdb-workspace-path work/joint/genomicsdb -L chr20:1-10000000
+        gatk GenotypeGVCFs -R /courses/BINF6610.202710/data/refs/grch38-1000g/GRCh38_full_analysis_set_plus_decoy_hla.fa -V gendb://work/joint/genomicsdb -O work/joint/cohort.vcf.gz
+        rm -rf work/joint/genomicsdb
+        n_cols=$(gzip -dc work/joint/cohort.vcf.gz | awk -F'\t' '/^#CHROM/ { n = NF - 9 } END { print n + 0 }')
+        echo "cohort VCF has $n_cols sample columns for 8 samples"
+        [ $n_cols -eq 8 ]) > logs/joint_genotype.log 2>&1
+        
+Job 2 has been submitted with SLURM jobid 11103548 (log: /home/kasemire.d/BINF6610/.snakemake/slurm_logs/rule_joint_genotype/11103548.log).
+slurmstepd: error: *** JOB 11103070 ON c0584 CANCELLED AT 2026-10-15T11:40:51 ***
