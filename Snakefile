@@ -224,10 +224,12 @@ rule joint_genotype:
     container: IMAGES["gatk"]
     shell:
         r"""
-        (rm -rf work/joint/genomicsdb
-        gatk GenomicsDBImport {params.variants} --genomicsdb-workspace-path work/joint/genomicsdb -L {params.region}
-        gatk GenotypeGVCFs -R {input.ref} -V gendb://work/joint/genomicsdb -O {output.vcf}
-        rm -rf work/joint/genomicsdb
+        # GenomicsDB writes many small files: keep it on the node's own disk (mktemp -d),
+        # not in work/, which on Explorer is the network home folder.
+        (tmp=$(mktemp -d)
+        trap 'rm -rf $tmp' EXIT
+        gatk GenomicsDBImport {params.variants} --genomicsdb-workspace-path $tmp/genomicsdb -L {params.region}
+        gatk GenotypeGVCFs -R {input.ref} -V gendb://$tmp/genomicsdb -O {output.vcf}
         n_cols=$(gzip -dc {output.vcf} | awk -F'\t' '/^#CHROM/ {{ n = NF - 9 }} END {{ print n + 0 }}')
         echo "cohort VCF has $n_cols sample columns for {params.n} samples"
         [ $n_cols -eq {params.n} ]) > {log} 2>&1
