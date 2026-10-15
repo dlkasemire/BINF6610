@@ -1,111 +1,102 @@
-# Troubleshooting — Assignment 4: four failures caused on purpose
+# Troubleshooting — Assignment 5 (Snakemake)
 
-The weeks 1–3 entries are in the Git history and in the tags assignment1 to assignment3.
+Four failures caused on purpose. Each has the command, what Snakemake printed, and the fix.
+Weeks 1–4's entries are in the Git history (tags assignment1 to assignment4).
 
-### 1 · Ctrl-C halfway through a smoke run, then -resume
+## 1 · Ctrl-C halfway through a laptop run
 
-    $ nextflow run main.nf -profile docker --samplesheet .../smoke/samplesheet.csv \
-          --ref .../smoke/smoke.fa --region smoke_1mb
-    [b1/2a9cf2] VALIDATE (samplesheet) | 1 of 1 ✔
-    [64/79532b] FASTQC (smoke_02)      | 1 of 3
-    [7b/9f227e] FASTP (smoke_03)       | 3 of 3 ✔
-    [a5/1c35a9] BWA_MEM (smoke_03)     | 0 of 3
-    ^C
-    WARN: Killing running tasks (5)
+**Command.** A fresh smoke run (`rm -rf results work logs`, then):
 
-    $ nextflow run main.nf -profile docker -resume ... (same parameters)
-    [b1/2a9cf2] VALIDATE (samplesheet)     | 1 of 1, cached: 1 ✔
-    [61/0f9205] FASTQC (smoke_01)          | 3 of 3, cached: 1 ✔
-    [7b/9f227e] FASTP (smoke_03)           | 3 of 3, cached: 3 ✔
-    [f4/083e54] BWA_MEM (smoke_01)         | 3 of 3 ✔
-    Succeeded   : 15
-    Cached      : 5
+    snakemake --profile profiles/laptop \
+        --config samplesheet=$HOME/smoke/samplesheet.csv ref=$HOME/smoke/smoke.fa region=smoke_1mb
 
-Cached: the 5 tasks that had finished before Ctrl-C — VALIDATE, all three FASTP
-and one FASTQC (same work folders, b1/2a9cf2 and 7b/9f227e). Ran again: the two
-FASTQC and three BWA_MEM tasks that were killed mid-run, and everything
-downstream of them. -resume reuses only tasks that finished successfully.
-My first attempt finished all 20 tasks in 1 m 55 s before I pressed Ctrl-C, so
-on the second I stopped it as soon as FASTP had finished.
+I pressed Ctrl-C at 9 of 21 steps, while `bwa_mem` was running for smoke_01.
 
-### 2 · The reference as a queue channel (smoke data)
+**What Snakemake printed.**
 
-I changed one line of main.nf to give BWA_MEM the reference as a queue channel:
+    ^CTerminating processes on user request, this might take some time.
+    RuleException:
+    CalledProcessError in file ".../Snakefile", line 157:
+    Command 'set -euo pipefail; (bwa mem -t 4 ... ) > logs/bwa_mem/smoke_01.log 2>&1' died with <Signals.SIGINT: 2>.
+    Error in rule bwa_mem:
+        jobid: 5
+        output: work/align/smoke_01.bam
+    WorkflowError:
+    At least one job did not complete successfully.
 
-    -    BWA_MEM(FASTP.out.reads, ref, ref_index)
-    +    BWA_MEM(FASTP.out.reads, channel.fromPath(params.ref), ref_index)
+**Then the same command again.** I expected Snakemake to refuse with
+`IncompleteFilesException` and tell me to add `--rerun-incomplete`. It did not refuse.
+It went straight on and finished:
 
-    [8c/1fc84b] FASTP (smoke_03)           | 3 of 3 ✔
-    [d3/548678] BWA_MEM (smoke_02)         | 1 of 1 ✔
-    [06/a59c3f] MARKDUPLICATES (smoke_02)  | 1 of 1 ✔
-    [1b/5e2e0e] HAPLOTYPECALLER (smoke_02) | 1 of 1 ✔
-    Succeeded   : 14
+    Job stats:
+    bwa_mem 1, markduplicates 3, haplotypecaller 3, multiqc 1,
+    joint_genotype 1, filter 1, publish 1, all 1 — total 12
+    ...
+    rule bwa_mem: reason: Missing output files: work/align/smoke_01.bam
+    ...
+    12 of 12 steps (100%) done
 
-    $ gzip -dc results/cohort.filtered.vcf.gz | grep '^#CHROM'
-    #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	smoke_02
+**Why.** Ctrl-C killed the running `bwa_mem` job, so that job counted as *failed*, and
+Snakemake deletes the output of a failed job. So the second run found no cut-off BAM,
+only a missing one, and simply made it again. `--rerun-incomplete` is for files that are
+still there but marked incomplete in `.snakemake/` (for example after the computer or
+the head process is killed so hard that Snakemake cannot clean up). Here there was
+nothing to rerun as incomplete.
 
-Nothing stopped the run. FASTP trimmed all three samples, but BWA_MEM ran for one
-sample only: channel.fromPath made a queue channel holding one item, the
-reference, and the first sample to arrive consumed it, so BWA_MEM never got a
-reference for the other two. The run reported Succeeded and published a
-"cohort" VCF with one sample column. Stage 6's column check did not catch it,
-because it compares the columns with the GVCFs it received, which was one.
-Fix: give the reference as a value, `ref = file(params.ref)`, which every
-sample can read (`git restore main.nf`).
+**How many jobs ran.** 12 of the 21. The 9 finished before Ctrl-C (validate, 3 fastqc,
+3 fastp, 2 bwa_mem) were reused.
 
-### 3 · A missing backslash: $( instead of \$( in FASTP's script block
+**Fix.** None needed. Run the same command again.
 
-In modules/fastp.nf I took the backslash off one command substitution:
+## 2 · A log without the output's wildcard
 
-    -    n=\$(gzip -dc ${meta.id}_R1.trim.fastq.gz | wc -l)
-    +    n=$(gzip -dc ${meta.id}_R1.trim.fastq.gz | wc -l)
+**Command.** In `rule bwa_mem` I changed `log: "logs/bwa_mem/{sample}.log"` to
+`log: "logs/bwa_mem.log"`, then ran a dry run:
 
-    ERROR ~ Error executing process > 'FASTP (smoke_01)'
-      Process `FASTP (smoke_01)` terminated with an error exit status (2)
+    snakemake --profile profiles/laptop -n \
+        --config samplesheet=$HOME/smoke/samplesheet.csv ref=$HOME/smoke/smoke.fa region=smoke_1mb
 
-In the task's work folder (work/39/109dd96d...), .command.sh shows what bash
-was actually given — Nextflow had taken the $ for itself and garbled the line,
-and the next line's ${meta.id} came out empty:
+**What Snakemake printed.** It stopped before building the job graph:
 
-    $ cat .command.sh
-    n=smoke_01gzip -dc smoke_01_R1.trim.fastq.gz | wc -l)
-    [ "$n" -gt 0 ] || { echo ": nothing survived trimming" >&2; exit 1; }
+    RuleException in file ".../Snakefile", line 142:
+    Not all output, log and benchmark files of rule bwa_mem contain the same wildcards.
+    This is crucial though, in order to avoid that two or more jobs write to the same file.
 
-    $ cat .command.err
-    .../.command.sh: line 7: syntax error near unexpected token `)'
+**Why it refuses.** `bwa_mem` runs once per sample: its output `work/align/{sample}.bam`
+has the wildcard `{sample}`. A log without `{sample}` would be the same file for all
+three jobs, so three jobs running at once would write over each other's log, and the
+log of a failed sample could belong to another one. Snakemake checks this in the rule
+itself, so it fails even with `-n`, before any job runs.
 
-`bash .command.run` in the same folder reran the task in its container and
-printed nothing: the wrapper writes the task's output to its own files. It
-reproduced the same error in .command.log and recorded exit code 255 in
-.exitcode (Nextflow had reported 2; I did not establish why the two differ).
-Fix: every $ meant for bash is written \$ inside a script block
-(`git restore modules/fastp.nf`).
+**Fix.** Put `{sample}` back: `log: "logs/bwa_mem/{sample}.log"` (`git restore Snakefile`).
 
-### 4 · A two-minute time limit on HaplotypeCaller (Explorer, first run)
+## 3 · Both wildcard_constraints deleted from the fastp rules
 
-I set `withName: 'HAPLOTYPECALLER' { time = '2m' }` in the explorer profile and
-submitted the head job (10920391). Stages 0–4 finished; HaplotypeCaller did not:
+**Command.** I deleted `wildcard_constraints:` and the `sample=one_of(...)` line under it
+from both `fastp_paired` and `fastp_single`, then ran a dry run:
 
-    ERROR ~ Error executing process > 'HAPLOTYPECALLER (NA12878)'
-      Process `HAPLOTYPECALLER (NA12878)` terminated with an error exit status (140)
+    sed -i '' '/wildcard_constraints:/{N;d;}' Snakefile
+    snakemake --profile profiles/laptop -n \
+        --config samplesheet=$HOME/smoke/samplesheet.csv ref=$HOME/smoke/smoke.fa region=smoke_1mb
 
-    JobID       JobName                       State       Elapsed   Timelimit  ExitCode
-    10920490    nf-HAPLOTYPECALLER_(NA12003)  FAILED      00:01:16  00:02:00   12:0
-    10920491    nf-HAPLOTYPECALLER_(NA12892)  FAILED      00:01:14  00:02:00   12:0
-    10920492    nf-HAPLOTYPECALLER_(NA12878)  FAILED      00:01:11  00:02:00   12:0
-    10920493    nf-HAPLOTYPECALLER_(NA07357)  FAILED      00:01:04  00:02:00   12:0
-    10920494    nf-HAPLOTYPECALLER_(NA10851)  FAILED      00:01:01  00:02:00   12:0
-    10920495    nf-HAPLOTYPECALLER_(NA12891)  CANCELLED+  00:01:00  00:02:00   0:0
-    10920500    nf-HAPLOTYPECALLER_(NA12873)  CANCELLED+  00:00:33  00:02:00   0:0
+**What Snakemake printed.**
 
-The State is FAILED, not TIMEOUT, and no job reached its 00:02:00 Timelimit:
-Nextflow asks Slurm for a warning signal before the limit and stops the task
-when it arrives, after about a minute here. sacct's exit code 12 is that
-signal, SIGUSR2, and Nextflow reports a task killed by signal 12 as
-128 + 12 = 140. Once one task failed, Nextflow cancelled the HaplotypeCaller
-jobs still running (CANCELLED+); NA12813 had not reached HaplotypeCaller yet.
-Fix: put `time = '1h'` back (`git restore nextflow.config`) and resubmit. On
-the resubmission (head job 10920960), -resume reused 32 tasks — VALIDATE, and
-FASTQC, FASTP and BWA_MEM for all eight samples, and MARKDUPLICATES for seven —
-and ran only NA12813's MarkDuplicates, the eight HaplotypeCallers and the
-cohort stages.
+    Building DAG of jobs...
+    AmbiguousRuleException:
+    Rules fastp_single and fastp_paired are ambiguous for the file work/trim/smoke_01_R1.trim.fastq.gz.
+    Consider starting rule output with a unique prefix, constrain your wildcards, or use the ruleorder directive.
+    Wildcards:
+        fastp_single: sample=smoke_01
+        fastp_paired: sample=smoke_01
+
+**Which rules and which file.** The two rules are `fastp_single` and `fastp_paired`; the
+file is `work/trim/smoke_01_R1.trim.fastq.gz`. Both rules have that output name, on
+purpose, so that `bwa_mem` can ask for `{sample}_R1.trim.fastq.gz` without knowing the
+library type. Without the constraints `{sample}` matches any name in both rules, so
+Snakemake has two ways to make smoke_01's R1 file and no reason to prefer one. It
+stopped at the first file it met (smoke_01, a paired sample); the single-end smoke_03
+would have been ambiguous too.
+
+**Fix.** Put the constraints back (`git restore Snakefile`):
+`sample=one_of(PAIRED)` on `fastp_paired`, `sample=one_of(SINGLE)` on `fastp_single`.
+Each sample name now matches exactly one rule.
