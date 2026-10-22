@@ -1,0 +1,49 @@
+{
+  "pipeline": {
+    "name": "variant-call",
+    "version": "1.0.0",
+    "implementation": "aws-batch",
+    "git_sha": "unknown",
+    "run_id": "2026-10-22T19:21:28Z-unknown",
+    "started_at": "2026-10-22T19:21:28Z",
+    "finished_at": "2026-10-22T19:22:58Z",
+    "exit_status": "success"
+  },
+  "platform": {
+    "kind": "aws-batch",
+    "region": "smoke_1mb",
+    "host": "ip-172-31-27-84.us-east-2.compute.internal",
+    "slurm_job_id": "none",
+    "slurm_cpus": "none",
+    "container": "none",
+    "batch_job_id": "9551be26-dfe4-4df1-bee5-8db53f77667a",
+    "batch_queue": "binf6610-queue",
+    "batch_compute_environment": "binf6610-fargate"
+  },
+  "reference": {"genome": "/tmp/run.PxLxoB/data/smoke.fa"},
+  "samples": [
+    {"sample_id": "smoke_01", "library_type": "paired", "condition": "unaffected"},
+    {"sample_id": "smoke_02", "library_type": "paired", "condition": "affected"},
+    {"sample_id": "smoke_03", "library_type": "single", "condition": "affected"}
+  ],
+  "outputs": [
+    {"stage": "analyze", "type": "vcf", "path": "cohort.filtered.vcf.gz", "checksum": "sha256:cd59b63378f31eb83856cc3f93a097ff20d82bb43d3c7478fe9cd09064859077"},
+    {"stage": "analyze", "type": "vcf_index", "path": "cohort.filtered.vcf.gz.tbi", "checksum": "sha256:397ce30173d0cd8226da9065e321ce6556d850b3e68c517d3e075b147aff3e35"},
+    {"stage": "analyze", "type": "vcf", "path": "cohort.vcf.gz", "checksum": "sha256:a87de3e04b3d7c5b260646f652b4cb24457edbab1832cd9a8b4b1a2f225869d0"},
+    {"stage": "analyze", "type": "vcf_index", "path": "cohort.vcf.gz.tbi", "checksum": "sha256:fa2e94d783c0081cadb68411da546d415b2168986dfd3e1568344df01d3ca483"},
+    {"stage": "qc_report", "type": "multiqc", "path": "multiqc_report.html", "checksum": "sha256:4c42536436fdce098d8bef9ba5bd899edb76531616e5a6ae5fdee515888a986b"},
+    {"stage": "publish", "type": "file", "path": "run_info.tsv", "checksum": "sha256:0015d8df530e2062b683314ba03a372cb762fe1dd902c2558fb9eaae79b414cb"},
+    {"stage": "publish", "type": "samples", "path": "samples.tsv", "checksum": "sha256:aea3b2211b6cab8b99694b24c701a878e3559bc036d7fd2b82b9d92dab2a7778"},
+    {"stage": "analyze", "type": "variant_table", "path": "variants.tsv", "checksum": "sha256:9a36f6479498f8f815a1e2dbf886ec58c168fb840a899906b54d694cb71deed6"}
+  ],
+  "metrics": [],
+  "tools": {
+    "bwa": "0.7.19-r1273",
+    "samtools": "1.24",
+    "bcftools": "1.24",
+    "gatk": "4.6.2.0",
+    "fastqc": "0.12.1",
+    "fastp": "1.3.7",
+    "multiqc": "1.35"
+  }
+}
