@@ -24,3 +24,6 @@ manifest records), the course samplesheet, and the GRCh38 reference. The tag
 If the pushed image were ever deleted, **Base image** and **Versions pinned**
 say how to rebuild it, but a rebuild would not be byte-identical: packages the
 recipe does not pin, such as htslib, are resolved on the day of the build.
+
+## The image in ECR
+<account>.dkr.ecr.us-east-2.amazonaws.com/variant-call@sha256:8372a742a9a4c71a319dc88f3f4b384507415b339f66e60d454e30b1bd27e616
