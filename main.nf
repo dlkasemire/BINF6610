@@ -17,7 +17,7 @@ workflow {
     // every sample can use them. A queue channel would be used by one sample.
     ref       = file(params.ref)                                // the FASTA
     ref_index = files("${params.ref}.*")                        // its .fai and the BWA index
-    ref_dict  = file("${ref.parent}/${ref.baseName}.dict")      // smoke.dict, not smoke.fa.dict
+    ref_dict  = ref.resolveSibling("${ref.baseName}.dict")      // smoke.dict, not smoke.fa.dict
 
     // One item per sample, [meta, reads], with the columns read by name.
     sheet = file(params.samplesheet)
