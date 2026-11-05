@@ -27,4 +27,5 @@ stage_analyze() {
 
     n_pass=$(gzip -dc "$filtered" | awk -F'\t' '!/^#/ && $7 == "PASS" { n++ } END { print n + 0 }')
     log "filtering: ${n_pass} of ${n_out} variants PASS"
+    log "caught by each filter: $(gzip -dc "$filtered" | awk -F'\t' '!/^#/ && $7 != "PASS" {print $7}' | sort | uniq -c | awk '{printf "%s %s  ", $2, $1}')"
 }
