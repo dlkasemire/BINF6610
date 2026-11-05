@@ -8,7 +8,7 @@ stage_analyze() {
     # Filtering LABELS variants in the FILTER column; it does not remove them.
     # Thresholds are GATK's recommended hard-filter starting points.
     gatk VariantFiltration -R "$REF" -V "$vcf" -O "$filtered" \
-         --filter-expression "QD < 2.0"    --filter-name QD2 \
+         --filter-expression "QD < 20.0"    --filter-name QD2 \
          --filter-expression "QUAL < 30.0" --filter-name QUAL30 \
          --filter-expression "FS > 60.0"   --filter-name FS60 \
          --filter-expression "SOR > 3.0"   --filter-name SOR3 \
@@ -27,4 +27,5 @@ stage_analyze() {
 
     n_pass=$(gzip -dc "$filtered" | awk -F'\t' '!/^#/ && $7 == "PASS" { n++ } END { print n + 0 }')
     log "filtering: ${n_pass} of ${n_out} variants PASS"
+    log "caught by each filter: $(gzip -dc "$filtered" | awk -F'\t' '!/^#/ && $7 != "PASS" {print $7}' | sort | uniq -c | awk '{printf "%s %s  ", $2, $1}')"
 }
