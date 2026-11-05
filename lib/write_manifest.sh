@@ -1,4 +1,4 @@
-	#!/usr/bin/env bash
+#!/usr/bin/env bash
 #-----------------------------------------------------------------------------
 # write_manifest.sh — the receipt your pipeline writes when it finishes.
 #
