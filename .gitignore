@@ -31,3 +31,4 @@ results/
 slurm/*.out
 .DS_Store
 .Rhistory
+*.db
